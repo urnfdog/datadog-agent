@@ -806,6 +806,7 @@ func (m *Model) GetEvaluator(field eval.Field, regID eval.RegisterID) (eval.Eval
 
 	case "exec.file.path":
 		return &eval.StringEvaluator{
+			OpOverrides: OverridePathnames,
 			EvalFnc: func(ctx *eval.Context) string {
 
 				return (*Event)(ctx.Object).Exec.Process.PathnameStr
@@ -2637,6 +2638,7 @@ func (m *Model) GetEvaluator(field eval.Field, regID eval.RegisterID) (eval.Eval
 
 	case "process.ancestors.file.path":
 		return &eval.StringArrayEvaluator{
+			OpOverrides: OverridePathnames,
 			EvalFnc: func(ctx *eval.Context) []string {
 				if ptr := ctx.Cache[field]; ptr != nil {
 					if result := (*[]string)(ptr); result != nil {
@@ -3407,6 +3409,7 @@ func (m *Model) GetEvaluator(field eval.Field, regID eval.RegisterID) (eval.Eval
 
 	case "process.file.path":
 		return &eval.StringEvaluator{
+			OpOverrides: OverridePathnames,
 			EvalFnc: func(ctx *eval.Context) string {
 
 				return (*Event)(ctx.Object).ProcessContext.Process.PathnameStr
