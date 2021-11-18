@@ -239,6 +239,13 @@ type PTraceEventSerializer struct {
 	Tracee  *ProcessContextSerializer `json:"tracee,omitempty" jsonschema_description:"process context of the tracee"`
 }
 
+type DNSEventSerializer struct {
+	QDCount int    `json:"qdcount" jsonschema_description:"qdcount defines the number of questions in the DNS request"`
+	QClass  string `json:"qclass" jsonschema_description:"qclass defines the class of the DNS request"`
+	QType   string `json:"qtype" jsonschema_description:"qtype defines the type of the DNS request"`
+	Name    string `json:"name" jsonschema_description:"name of the DNS request"`
+}
+
 // DDContextSerializer serializes a span context to JSON
 // easyjson:json
 type DDContextSerializer struct {
@@ -256,6 +263,7 @@ type EventSerializer struct {
 	*MMapEventSerializer       `json:"mmap,omitempty"`
 	*MProtectEventSerializer   `json:"mprotect,omitempty"`
 	*PTraceEventSerializer     `json:"ptrace,omitempty"`
+	*DNSEventSerializer        `json:"dns,omitempty"`
 	UserContextSerializer      UserContextSerializer       `json:"usr,omitempty"`
 	ProcessContextSerializer   ProcessContextSerializer    `json:"process,omitempty"`
 	DDContextSerializer        DDContextSerializer         `json:"dd,omitempty"`
@@ -566,6 +574,15 @@ func newPTraceEventSerializer(e *Event) *PTraceEventSerializer {
 	return ptes
 }
 
+func newDNSEventSerializer(e *Event) *DNSEventSerializer {
+	return &DNSEventSerializer{
+		QDCount: int(e.DNS.QDCount),
+		QClass:  model.QClass(e.DNS.QClass).String(),
+		QType:   model.QType(e.DNS.QType).String(),
+		Name:    e.DNS.Name,
+	}
+}
+
 func serializeSyscallRetval(retval int64) string {
 	switch {
 	case syscall.Errno(retval) == syscall.EACCES || syscall.Errno(retval) == syscall.EPERM:
@@ -770,6 +787,9 @@ func NewEventSerializer(event *Event) *EventSerializer {
 	case model.PTraceEventType:
 		s.EventContextSerializer.Outcome = serializeSyscallRetval(event.PTrace.Retval)
 		s.PTraceEventSerializer = newPTraceEventSerializer(event)
+	case model.DNSEventType:
+		s.EventContextSerializer.Outcome = serializeSyscallRetval(event.DNS.Retval)
+		s.DNSEventSerializer = newDNSEventSerializer(event)
 	}
 
 	return s

@@ -147,6 +147,7 @@ type Event struct {
 	PTrace   PTraceEvent   `field:"ptrace" event:"ptrace"`     // [7.34] [Kernel] [Experimental] A ptrace command was executed
 	MMap     MMapEvent     `field:"mmap" event:"mmap"`         // [7.34] [Kernel] [Experimental] A mmap command was executed
 	MProtect MProtectEvent `field:"mprotect" event:"mprotect"` // [7.34] [Kernel] [Experimental] A mprotect command was executed
+	DNS      DNSEvent      `field:"dns" event:"dns"`           // [7.35] [Kernel] [Experimental] A DNS request was sent
 
 	Mount            MountEvent            `field:"-"`
 	Umount           UmountEvent           `field:"-"`
@@ -631,4 +632,14 @@ type MProtectEvent struct {
 	VMEnd         uint64 `field:"-"`
 	VMProtection  int    `field:"vm_protection"`
 	ReqProtection int    `field:"req_protection"`
+}
+
+// DNSEvent represents a DNS event
+type DNSEvent struct {
+	SyscallEvent
+
+	QDCount uint16 `field:"qdcount"` // qdcount field of the DNS request
+	QClass  uint16 `field:"qclass"`  // qclass field of the DNS request
+	QType   uint16 `field:"qtype"`   // qtype field of the DNS request
+	Name    string `field:"name"`    // name field of the DNS request
 }

@@ -49,7 +49,7 @@ int __attribute__((always_inline)) unregister_span_memory() {
 void __attribute__((always_inline)) fill_span_context(struct span_context_t *span) {
    u64 pid_tgid = bpf_get_current_pid_tgid();
    u32 tgid = pid_tgid >> 32;
-  
+
    struct span_tls_t *tls = bpf_map_lookup_elem(&span_tls, &tgid);
    if (tls) {
       u32 tid = pid_tgid;

@@ -38,6 +38,9 @@ CWS logs have the following JSON schema:
         "ptrace": {
             "$ref": "#/definitions/PTraceEvent"
         },
+        "dns": {
+            "$ref": "#/definitions/DNSEvent"
+        },
         "usr": {
             "$ref": "#/definitions/UserContext"
         },
@@ -70,6 +73,7 @@ CWS logs have the following JSON schema:
 | `mmap` | $ref | Please see [MMapEvent](#mmapevent) |
 | `mprotect` | $ref | Please see [MProtectEvent](#mprotectevent) |
 | `ptrace` | $ref | Please see [PTraceEvent](#ptraceevent) |
+| `dns` | $ref | Please see [DNSEvent](#dnsevent) |
 | `usr` | $ref | Please see [UserContext](#usercontext) |
 | `process` | $ref | Please see [ProcessContext](#processcontext) |
 | `dd` | $ref | Please see [DDContext](#ddcontext) |
@@ -229,6 +233,49 @@ CWS logs have the following JSON schema:
 | ----- | ----------- |
 | `span_id` | Span ID used for APM correlation |
 | `trace_id` | Trace ID used for APM correlation |
+
+
+## `DNSEvent`
+
+
+{{< code-block lang="json" collapsible="true" >}}
+{
+    "required": [
+        "qdcount",
+        "qclass",
+        "qtype",
+        "name"
+    ],
+    "properties": {
+        "qdcount": {
+            "type": "integer",
+            "description": "qdcount defines the number of questions in the DNS request"
+        },
+        "qclass": {
+            "type": "string",
+            "description": "qclass defines the class of the DNS request"
+        },
+        "qtype": {
+            "type": "string",
+            "description": "qtype defines the type of the DNS request"
+        },
+        "name": {
+            "type": "string",
+            "description": "name of the DNS request"
+        }
+    },
+    "additionalProperties": false,
+    "type": "object"
+}
+
+{{< /code-block >}}
+
+| Field | Description |
+| ----- | ----------- |
+| `qdcount` | qdcount defines the number of questions in the DNS request |
+| `qclass` | qclass defines the class of the DNS request |
+| `qtype` | qtype defines the type of the DNS request |
+| `name` | name of the DNS request |
 
 
 ## `EventContext`
