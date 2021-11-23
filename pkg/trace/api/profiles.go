@@ -150,6 +150,9 @@ func (m *multiTransport) RoundTrip(req *http.Request) (rresp *http.Response, rer
 		r.Header.Set("DD-API-KEY", apiKey)
 	}
 	defer func() {
+		if rresp != nil {
+			log.Info("Response from server is " + http.StatusText(rresp.StatusCode))
+		}
 		// Hack for backwards-compatibility
 		// The old v1/input endpoint responded with 200 and as this handler
 		// is just a proxy to existing clients, some clients break on
