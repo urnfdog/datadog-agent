@@ -69,6 +69,10 @@ const (
 	MProtectEventType
 	// DNSEventType DNS event
 	DNSEventType
+	// NetDeviceEventType is sent for events on net devices
+	NetDeviceEventType
+	// VethPairEventType is sent when a new veth pair is created
+	VethPairEventType
 	// MaxEventType is used internally to get the maximum number of kernel events.
 	MaxEventType
 
@@ -150,6 +154,10 @@ func (t EventType) String() string {
 		return "mprotect"
 	case DNSEventType:
 		return "dns"
+	case NetDeviceEventType:
+		return "net_device"
+	case VethPairEventType:
+		return "veth_pair"
 
 	case CustomLostReadEventType:
 		return "lost_events_read"

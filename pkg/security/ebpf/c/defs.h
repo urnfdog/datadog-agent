@@ -217,6 +217,8 @@ enum event_type
     EVENT_MMAP,
     EVENT_MPROTECT,
     EVENT_DNS,
+    EVENT_NET_DEVICE,
+    EVENT_VETH_PAIR,
     EVENT_MAX, // has to be the last one
 };
 
