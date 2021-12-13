@@ -32,6 +32,7 @@ type Resolvers struct {
 	ProcessResolver   *ProcessResolver
 	UserGroupResolver *UserGroupResolver
 	TagsResolver      *TagsResolver
+	NamespaceResolver *NamespaceResolver
 }
 
 // NewResolvers creates a new instance of Resolvers
@@ -64,6 +65,7 @@ func NewResolvers(config *config.Config, probe *Probe) (*Resolvers, error) {
 		ContainerResolver: &ContainerResolver{},
 		UserGroupResolver: userGroupResolver,
 		TagsResolver:      NewTagsResolver(config),
+		NamespaceResolver: NewNamespaceResolver(probe),
 	}
 
 	processResolver, err := NewProcessResolver(probe, resolvers, probe.statsdClient, NewProcessResolverOpts(probe.config.CookieCacheSize))
@@ -189,6 +191,7 @@ func (r *Resolvers) Snapshot() error {
 	}
 
 	r.ProcessResolver.SetState(snapshotted)
+	r.NamespaceResolver.SetState(snapshotted)
 
 	selinuxStatusMap, err := r.probe.Map("selinux_enforce_status")
 	if err != nil {
@@ -239,6 +242,9 @@ func (r *Resolvers) snapshot() error {
 
 		// Sync the process cache
 		cacheModified = r.ProcessResolver.SyncCache(proc)
+
+		// Sync the namespace cache
+		cacheModified = cacheModified || r.NamespaceResolver.SyncCache(proc)
 	}
 
 	// There is a possible race condition when a process starts right after we called process.AllProcesses

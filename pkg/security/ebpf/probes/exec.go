@@ -123,6 +123,13 @@ var execProbes = []*manager.Probe{
 			EBPFFuncName: "kretprobe__task_pid_nr_ns",
 		},
 	},
+	{
+		ProbeIdentificationPair: manager.ProbeIdentificationPair{
+			UID:          SecurityAgentUID,
+			EBPFSection:  "kprobe/switch_task_namespaces",
+			EBPFFuncName: "kprobe_switch_task_namespaces",
+		},
+	},
 }
 
 func getExecProbes() []*manager.Probe {
