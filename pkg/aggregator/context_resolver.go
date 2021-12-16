@@ -31,14 +31,13 @@ type contextResolver struct {
 	contextsByKey map[ckey.ContextKey]*Context
 	tagsCache     *tags.Store
 	keyGenerator  *ckey.KeyGenerator
-	// buffer slice allocated once per contextResolver to combine and sort
-	// tags, origin detection tags and k8s tags.
-	tagsBuffer *tagset.HashingTagsAccumulator
+	taggerBuffer  *tagset.HashingTagsAccumulator
+	metricBuffer  *tagset.HashingTagsAccumulator
 }
 
 // generateContextKey generates the contextKey associated with the context of the metricSample
 func (cr *contextResolver) generateContextKey(metricSampleContext metrics.MetricSampleContext) (ckey.ContextKey, ckey.TagsKey) {
-	return cr.keyGenerator.GenerateWithTags(metricSampleContext.GetName(), metricSampleContext.GetHost(), cr.tagsBuffer)
+	return cr.keyGenerator.GenerateWithTags2(metricSampleContext.GetName(), metricSampleContext.GetHost(), cr.taggerBuffer, cr.metricBuffer)
 }
 
 func newContextResolver(cache *tags.Store) *contextResolver {
@@ -52,7 +51,7 @@ func newContextResolver(cache *tags.Store) *contextResolver {
 
 // trackContext returns the contextKey associated with the context of the metricSample and tracks that context
 func (cr *contextResolver) trackContext(metricSampleContext metrics.MetricSampleContext) ckey.ContextKey {
-	metricSampleContext.GetTags(cr.tagsBuffer)                        // tags here are not sorted and can contain duplicates
+	metricSampleContext.GetTags(cr.taggerBuffer, cr.metricBuffer)     // tags here are not sorted and can contain duplicates
 	contextKey, tagsKey := cr.generateContextKey(metricSampleContext) // the generator will remove duplicates from cr.tagsBuffer (and doesn't mind the order)
 
 	if _, ok := cr.contextsByKey[contextKey]; !ok {
@@ -60,13 +59,16 @@ func (cr *contextResolver) trackContext(metricSampleContext metrics.MetricSample
 		// will be reused later. This allow us to allocate one slice
 		// per context instead of one per sample.
 		cr.contextsByKey[contextKey] = &Context{
-			Name: metricSampleContext.GetName(),
-			tags: cr.tagsCache.Insert(tagsKey, cr.tagsBuffer),
-			Host: metricSampleContext.GetHost(),
+			Name:       metricSampleContext.GetName(),
+			taggerTags: cr.tagsCache.Insert(tagsKey, cr.taggerTags),
+			metricTags: cr.tagsCache.Insert(tagsKey, cr.metricTags),
+			Host:       metricSampleContext.GetHost(),
 		}
 	}
 
-	cr.tagsBuffer.Reset()
+	cr.taggerBuffer.Reset()
+	cr.metricBuffer.Reset()
+
 	return contextKey
 }
 
