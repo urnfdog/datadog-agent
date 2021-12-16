@@ -24,6 +24,12 @@ func (t testCCClient) ListV3OrganizationsByQuery(_ url.Values) ([]cfclient.V3Org
 func (t testCCClient) ListV3SpacesByQuery(_ url.Values) ([]cfclient.V3Space, error) {
 	return []cfclient.V3Space{v3Space1, v3Space2}, nil
 }
+func (t testCCClient) ListAllProcessesByQuery(_ url.Values) ([]cfclient.Process, error) {
+	return []cfclient.Process{cfProcess1, cfProcess2}, nil
+}
+func (t testCCClient) ListOrgQuotasByQuery(_ url.Values) ([]cfclient.OrgQuota, error) {
+	return []cfclient.OrgQuota{cfOrgQuota1, cfOrgQuota2}, nil
+}
 
 func TestCCCachePolling(t *testing.T) {
 	assert.NotZero(t, cc.LastUpdated())

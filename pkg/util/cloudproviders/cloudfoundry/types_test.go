@@ -84,9 +84,29 @@ var cfOrg1 = CFOrg{
 	Name: "org_name_1",
 }
 
+var cfOrgQuota1 = cfclient.OrgQuota{
+	Guid: "org_quota_guid_1",
+	Name: "org_quota_name_1",
+}
+
+var cfOrgQuota2 = cfclient.OrgQuota{
+	Guid: "org_quota_guid_2",
+	Name: "org_quota_name_2",
+}
+
 var v3Org2 = cfclient.V3Organization{
 	Name: "org_name_2",
 	GUID: "org_guid_2",
+}
+
+var cfProcess1 = cfclient.Process{
+	GUID: "process_guid_1",
+	Type: "process_type_1",
+}
+
+var cfProcess2 = cfclient.Process{
+	GUID: "process_guid_2",
+	Type: "process_type_2",
 }
 
 var BBSModelA1 = models.ActualLRP{
