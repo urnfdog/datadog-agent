@@ -3,14 +3,11 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
 // Copyright 2016-present Datadog, Inc.
 
-// +build !kubeapiserver
+package serializer
 
-package hostinfo
+import (
+	"github.com/DataDog/agent-payload/v5/contlcycle"
+)
 
-func apiserverNodeLabels(nodeName string) (map[string]string, error) {
-	return nil, nil
-}
-
-func apiserverNodeAnnotations(nodeName string) (map[string]string, error) {
-	return nil, nil
-}
+// ContainerLifecycleMessage is a type alias for contlcycle proto payload
+type ContainerLifecycleMessage = contlcycle.EventsPayload

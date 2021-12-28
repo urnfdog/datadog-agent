@@ -61,7 +61,7 @@ require (
 	code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a // indirect
 	code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3 // indirect
 	github.com/BurntSushi/toml v0.4.1 // indirect
-	github.com/DataDog/agent-payload/v5 v5.0.6
+	github.com/DataDog/agent-payload/v5 v5.0.8
 	github.com/DataDog/datadog-agent/pkg/obfuscate v0.0.0-00010101000000-000000000000
 	github.com/DataDog/datadog-agent/pkg/otlp/model v0.33.0-rc.4
 	github.com/DataDog/datadog-agent/pkg/quantile v0.33.0-rc.4
@@ -80,7 +80,7 @@ require (
 	github.com/DataDog/sketches-go v1.2.1
 	github.com/DataDog/viper v1.9.0
 	github.com/DataDog/watermarkpodautoscaler v0.3.1-logs-attributes.2.0.20211014120627-6d6a5c559fc9
-	github.com/DataDog/zstd v1.4.8
+	github.com/DataDog/zstd v1.5.0
 	github.com/DataDog/zstd_0 v0.0.0-20210310093942-586c1286621f
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0

@@ -544,6 +544,7 @@ func InitConfig(config Config) {
 	config.BindEnvAndSetDefault("kubernetes_pod_labels_as_tags", map[string]string{})
 	config.BindEnvAndSetDefault("kubernetes_pod_annotations_as_tags", map[string]string{})
 	config.BindEnvAndSetDefault("kubernetes_node_labels_as_tags", map[string]string{})
+	config.BindEnvAndSetDefault("kubernetes_node_annotations_as_host_aliases", []string{"cluster.k8s.io/machine"})
 	config.BindEnvAndSetDefault("kubernetes_namespace_labels_as_tags", map[string]string{})
 	config.BindEnvAndSetDefault("container_cgroup_prefix", "")
 
@@ -904,6 +905,11 @@ func InitConfig(config Config) {
 	config.BindEnv("orchestrator_explorer.max_per_message")
 	config.BindEnv("orchestrator_explorer.orchestrator_dd_url")
 	config.BindEnv("orchestrator_explorer.orchestrator_additional_endpoints")
+
+	// Container lifecycle configuration
+	config.BindEnvAndSetDefault("container_lifecycle.enabled", false)
+	config.BindEnv("container_lifecycle.dd_url")
+	config.BindEnv("container_lifecycle.additional_endpoints")
 
 	// Orchestrator Explorer - process agent
 	// DEPRECATED in favor of `orchestrator_explorer.orchestrator_dd_url` setting. If both are set `orchestrator_explorer.orchestrator_dd_url` will take precedence.
@@ -1376,7 +1382,12 @@ func getMultipleEndpointsWithConfig(config Config) (map[string][]string, error) 
 	}
 
 	additionalEndpoints := config.GetStringMapStringSlice("additional_endpoints")
-	// merge additional endpoints into keysPerDomain
+
+	return MergeAdditionalEndpoints(keysPerDomain, additionalEndpoints)
+}
+
+// MergeAdditionalEndpoints merges additional endpoints into keysPerDomain
+func MergeAdditionalEndpoints(keysPerDomain, additionalEndpoints map[string][]string) (map[string][]string, error) {
 	for domain, apiKeys := range additionalEndpoints {
 
 		// Validating domain
