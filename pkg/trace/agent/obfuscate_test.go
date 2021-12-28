@@ -77,7 +77,7 @@ func TestAppSecMetaStructHook(t *testing.T) {
 		appsecb := []byte{}
 		appsecb, err := appsec.MarshalMsg(appsecb)
 		if err != nil {
-			t.Fatal("couldn't marshal appsec struct: %v", err)
+			t.Fatalf("couldn't marshal appsec struct: %v", err)
 		}
 
 		assert.Equal(t, appsecb, cco.MetaStructHook("appsec", appsecb))
@@ -104,7 +104,7 @@ func TestAppSecMetaStructHook(t *testing.T) {
 		appsecb := []byte{}
 		appsecb, err := appsec.MarshalMsg(appsecb)
 		if err != nil {
-			t.Fatal("couldn't marshal appsec struct: %v", err)
+			t.Fatalf("couldn't marshal appsec struct: %v", err)
 		}
 
 		obfuscated := cco.MetaStructHook("appsec", appsecb)
@@ -115,6 +115,20 @@ func TestAppSecMetaStructHook(t *testing.T) {
 		// Rule match value & highlight can contain user data
 		assert.Equal(t, "?", appsec.Triggers[0].RuleMatches[0].Parameters[0].Value)
 		assert.Equal(t, []string{"?"}, appsec.Triggers[0].RuleMatches[0].Parameters[0].Highlight)
+	})
+
+	t.Run("unknown struct", func(t *testing.T) {
+		data := []byte{0x80}
+		obfuscated := cco.MetaStructHook("unknown", data)
+
+		assert.Equal(t, data, obfuscated)
+	})
+
+	t.Run("invalid struct", func(t *testing.T) {
+		data := []byte{0x80}
+		obfuscated := cco.MetaStructHook("appsec", data)
+
+		assert.Equal(t, data, obfuscated)
 	})
 }
 

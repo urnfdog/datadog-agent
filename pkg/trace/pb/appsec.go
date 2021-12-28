@@ -5,13 +5,14 @@
 
 package pb
 
-// From https://github.com/DataDog/libddwaf/blob/8ee1ae3111d525357040c0e06a86d2667d6df490/schema/appsec-event-1.0.0.json
+// AppSecRule represents an AppSec rule.
 type AppSecRule struct {
 	ID   string            `msg:"id"`
 	Name string            `msg:"name"`
 	Tags map[string]string `msg:"tags"`
 }
 
+// AppSecRuleMatchParameter represents the data matched by an AppSec rule.
 type AppSecRuleMatchParameter struct {
 	Address   string        `msg:"address"`
 	KeyPath   []interface{} `msg:"key_path"`
@@ -19,17 +20,20 @@ type AppSecRuleMatchParameter struct {
 	Highlight []string      `msg:"highlight"`
 }
 
+// AppSecRuleMatch represents an AppSec rule match.
 type AppSecRuleMatch struct {
 	Operator      string                     `msg:"operator"`
 	OperatorValue string                     `msg:"operator_value"`
 	Parameters    []AppSecRuleMatchParameter `msg:"parameters"`
 }
 
+// AppSecTrigger associates an AppSec rule and the data it matched.
 type AppSecTrigger struct {
 	Rule        AppSecRule        `msg:"rule"`
 	RuleMatches []AppSecRuleMatch `msg:"rule_matches"`
 }
 
+// AppSecStruct is a container for AppSec data sent by the tracers.
 type AppSecStruct struct {
 	Triggers []AppSecTrigger `msg:"triggers"`
 }
