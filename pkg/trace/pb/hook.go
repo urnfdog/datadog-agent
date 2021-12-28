@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	mu             sync.RWMutex // guards metahook
+	mu             sync.RWMutex // guard metahooks
 	metahook       func(_, v string) string
 	metastructhook func(k string, v []byte) []byte
 )

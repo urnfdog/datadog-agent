@@ -27,6 +27,8 @@ func TestNewCreditCardsObfuscator(t *testing.T) {
 	NewAgent(ctx, cfg)
 	_, ok = pb.MetaHook()
 	assert.True(t, ok)
+	_, ok = pb.MetaStructHook()
+	assert.True(t, ok)
 }
 
 func TestMetaHook(t *testing.T) {
@@ -48,6 +50,72 @@ func TestMetaHook(t *testing.T) {
 	} {
 		assert.Equal(t, tt.out, cco.MetaHook(tt.k, tt.v))
 	}
+}
+
+func TestAppSecMetaStructHook(t *testing.T) {
+	cco := newCreditCardsObfuscator(config.CreditCardsConfig{Enabled: true})
+	defer cco.Stop()
+
+	t.Run("no creditcards", func(t *testing.T) {
+
+		appsec := pb.AppSecStruct{Triggers: []pb.AppSecTrigger{{
+			Rule: pb.AppSecRule{ID: "ua-000-01", Name: "Arachni"},
+			RuleMatches: []pb.AppSecRuleMatch{{
+				Operator:      "regex_match",
+				OperatorValue: "Arachni",
+				Parameters: []pb.AppSecRuleMatchParameter{
+					{
+						Address:   "http.request.headers",
+						KeyPath:   []interface{}{"user-agent", 0},
+						Value:     "Arachni/v1",
+						Highlight: []string{"Arachni"},
+					},
+				},
+			}},
+		}}}
+
+		appsecb := []byte{}
+		appsecb, err := appsec.MarshalMsg(appsecb)
+		if err != nil {
+			t.Fatal("couldn't marshal appsec struct: %v", err)
+		}
+
+		assert.Equal(t, appsecb, cco.MetaStructHook("appsec", appsecb))
+	})
+
+	t.Run("with creditcards", func(t *testing.T) {
+
+		appsec := pb.AppSecStruct{Triggers: []pb.AppSecTrigger{{
+			Rule: pb.AppSecRule{ID: "ua-000-01", Name: "5105-1051-0510-5100"},
+			RuleMatches: []pb.AppSecRuleMatch{{
+				Operator:      "regex_match",
+				OperatorValue: "Arachni",
+				Parameters: []pb.AppSecRuleMatchParameter{
+					{
+						Address:   "http.request.headers",
+						KeyPath:   []interface{}{"user-agent", 0},
+						Value:     "5105-1051-0510-5100",
+						Highlight: []string{"5105-1051-0510-5100"},
+					},
+				},
+			}},
+		}}}
+
+		appsecb := []byte{}
+		appsecb, err := appsec.MarshalMsg(appsecb)
+		if err != nil {
+			t.Fatal("couldn't marshal appsec struct: %v", err)
+		}
+
+		obfuscated := cco.MetaStructHook("appsec", appsecb)
+		_, err = appsec.UnmarshalMsg(obfuscated)
+		assert.Nil(t, err)
+		// Rule name does not contain user data
+		assert.Equal(t, "5105-1051-0510-5100", appsec.Triggers[0].Rule.Name)
+		// Rule match value & highlight can contain user data
+		assert.Equal(t, "?", appsec.Triggers[0].RuleMatches[0].Parameters[0].Value)
+		assert.Equal(t, []string{"?"}, appsec.Triggers[0].RuleMatches[0].Parameters[0].Highlight)
+	})
 }
 
 func TestObfuscateStatsGroup(t *testing.T) {

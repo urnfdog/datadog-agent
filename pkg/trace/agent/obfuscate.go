@@ -179,7 +179,7 @@ func (cco *ccObfuscator) MetaHook(k, v string) (newval string) {
 }
 
 // MetaStructHook checks the tag with the given key and val and returns the final
-// value to be assigned to this tag if it was modified, nil otherwise.
+// value to be assigned to this tag.
 func (cco *ccObfuscator) MetaStructHook(k string, v []byte) (newval []byte) {
 	if k == "appsec" {
 		var obfuscated bool
@@ -188,19 +188,18 @@ func (cco *ccObfuscator) MetaStructHook(k string, v []byte) (newval []byte) {
 		if err != nil {
 			// Not an appsec struct, ignore the value and log an error
 			log.Errorf("Error obfuscating appsec struct: %v", err)
-			return nil
+			return v
 		}
-		obfuscated = false
 		for _, trigger := range appsec.Triggers {
 			for _, rulematch := range trigger.RuleMatches {
-				for _, parameter := range rulematch.Parameters {
+				for i, parameter := range rulematch.Parameters {
 					if obfuscate.IsCardNumber(parameter.Value, cco.luhn) {
-						parameter.Value = "?"
+						rulematch.Parameters[i].Value = "?"
 						obfuscated = true
 					}
-					for i, highlight := range parameter.Highlight {
+					for j, highlight := range parameter.Highlight {
 						if obfuscate.IsCardNumber(highlight, cco.luhn) {
-							parameter.Highlight[i] = "?"
+							parameter.Highlight[j] = "?"
 							obfuscated = true
 						}
 					}
@@ -208,17 +207,16 @@ func (cco *ccObfuscator) MetaStructHook(k string, v []byte) (newval []byte) {
 			}
 		}
 		if obfuscated {
-			var newval []byte
-			newval = make([]byte, appsec.Msgsize())
-			_, err := appsec.MarshalMsg(newval)
+			newval, err := appsec.MarshalMsg(nil)
 			if err != nil {
 				log.Errorf("Error replacing obfuscated appsec struct: %v", err)
+				return v
 			}
 			return newval
 		}
-		return nil
+		return v
 	}
-	// Do not obfuscate unknown structures for now
-	log.Debugf("Obfuscating unknown meta struct is not supported for key: %q", k)
-	return nil
+	// Do not obfuscate unknown structures
+	log.Debugf("Obfuscating unknown meta struct is not supported for key: %v", k)
+	return v
 }

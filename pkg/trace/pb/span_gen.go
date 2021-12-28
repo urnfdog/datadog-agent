@@ -16,9 +16,9 @@ import (
 // MarshalMsg implements msgp.Marshaler
 func (z *Span) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 12
+	// map header, size 13
 	// string "service"
-	o = append(o, 0x8c, 0xa7, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65)
+	o = append(o, 0x8d, 0xa7, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65)
 	o = msgp.AppendString(o, z.Service)
 	// string "name"
 	o = append(o, 0xa4, 0x6e, 0x61, 0x6d, 0x65)
@@ -82,7 +82,8 @@ func (z *Span) UnmarshalMsg(bts []byte) (o []byte, err error) {
 		err = msgp.WrapError(err)
 		return
 	}
-	hook, hookok := MetaHook()
+	metahook, metahookok := MetaHook()
+	metastructhook, metastructhookok := MetaStructHook()
 	for zb0001 > 0 {
 		zb0001--
 		field, bts, err = msgp.ReadMapKeyZC(bts)
@@ -178,8 +179,8 @@ func (z *Span) UnmarshalMsg(bts []byte) (o []byte, err error) {
 					err = msgp.WrapError(err, "Meta", za0001)
 					return
 				}
-				if hookok {
-					z.Meta[za0001] = hook(za0001, za0002)
+				if metahookok {
+					z.Meta[za0001] = metahook(za0001, za0002)
 				} else {
 					z.Meta[za0001] = za0002
 				}
@@ -258,7 +259,11 @@ func (z *Span) UnmarshalMsg(bts []byte) (o []byte, err error) {
 					err = msgp.WrapError(err, "MetaStruct", za0006)
 					return
 				}
-				z.MetaStruct[za0005] = za0006
+				if metastructhookok {
+					z.MetaStruct[za0005] = metastructhook(za0005, za0006)
+				} else {
+					z.MetaStruct[za0005] = za0006
+				}
 			}
 		default:
 			bts, err = msgp.Skip(bts)

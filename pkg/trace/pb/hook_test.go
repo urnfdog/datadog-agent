@@ -42,3 +42,35 @@ func TestMetaHook(t *testing.T) {
 		assert.Equal(map[string]string{"card.number": "test"}, s.Meta, "Warning! pkg/trace/pb: MetaHook was not applied. One possible cause is regenerating the code in this folder without porting custom modifications of it.")
 	})
 }
+
+func TestMetaStructHook(t *testing.T) {
+
+	t.Run("off", func(t *testing.T) {
+		b := newEmptyMessage()
+		b = msgp.AppendString(b, "meta_struct")
+		b = msgp.AppendMapHeader(b, 1)
+		b = msgp.AppendString(b, "appsec")
+		b = msgp.AppendBytes(b, msgp.AppendMapHeader(nil, 0))
+		s, err := decodeBytes(b)
+
+		assert := assert.New(t)
+		assert.Nil(err)
+		assert.Equal(map[string][]byte{"appsec": {0x80}}, s.MetaStruct)
+	})
+
+	t.Run("on", func(t *testing.T) {
+		SetMetaStructHook(func(k string, v []byte) []byte { return msgp.AppendNil(nil) })
+		defer SetMetaStructHook(nil)
+
+		b := newEmptyMessage()
+		b = msgp.AppendString(b, "meta_struct")
+		b = msgp.AppendMapHeader(b, 1)
+		b = msgp.AppendString(b, "appsec")
+		b = msgp.AppendBytes(b, msgp.AppendMapHeader(nil, 0))
+		s, err := decodeBytes(b)
+
+		assert := assert.New(t)
+		assert.Nil(err)
+		assert.True(msgp.IsNil(s.MetaStruct["appsec"]))
+	})
+}
