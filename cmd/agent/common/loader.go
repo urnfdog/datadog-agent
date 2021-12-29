@@ -32,6 +32,9 @@ func LoadComponents(confdPath string) {
 	// be the first subscribed to metadata store to avoid race conditions.
 	tagger.SetDefaultTagger(local.NewTagger(collectors.DefaultCatalog))
 	if err := tagger.Init(); err != nil {
+		// uncomment this to dump all workloadmeta events as debug logs
+		//dumper.Enable()
+
 		log.Errorf("failed to start the tagger: %s", err)
 	}
 
