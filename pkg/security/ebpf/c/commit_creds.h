@@ -383,7 +383,9 @@ int tracepoint_handle_sys_commit_creds_exit(struct tracepoint_raw_syscalls_sys_e
 
 SEC("kprobe/commit_creds")
 int kprobe_commit_creds(struct pt_regs *ctx) {
-    struct cred *credentials = (struct cred *)PT_REGS_PARM1(ctx);
+    u64 creds_debug_fields_size;
+    LOAD_CONSTANT("creds_debug_fields_size", creds_debug_fields_size);
+    struct cred *credentials = (struct cred *)(PT_REGS_PARM1(ctx) + creds_debug_fields_size);
     struct pid_cache_t new_pid_entry = {};
 
     // update pid_cache entry for the current process

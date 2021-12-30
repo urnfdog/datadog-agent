@@ -108,6 +108,17 @@ func TTYConstants(probe *Probe) []manager.ConstantEditor {
 	}
 }
 
+func getCredsDebugFieldsSize(probe *Probe) uint64 {
+	var size uint64 = 0
+
+	switch {
+	case probe.kernelVersion.IsCOSKernel():
+		size = 16
+	}
+
+	return size
+}
+
 // ProcessResolverOpts options of resolver
 type ProcessResolverOpts struct{}
 

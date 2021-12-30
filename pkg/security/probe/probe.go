@@ -949,6 +949,10 @@ func NewProbe(config *config.Config, client *statsd.Client) (*Probe, error) {
 			Name:  "check_helper_call_input",
 			Value: getCheckHelperCallInputType(p),
 		},
+		manager.ConstantEditor{
+			Name:  "creds_debug_fields_size",
+			Value: getCredsDebugFieldsSize(p),
+		},
 	)
 	p.managerOptions.ConstantEditors = append(p.managerOptions.ConstantEditors, TTYConstants(p)...)
 	p.managerOptions.ConstantEditors = append(p.managerOptions.ConstantEditors, DiscarderConstants...)
