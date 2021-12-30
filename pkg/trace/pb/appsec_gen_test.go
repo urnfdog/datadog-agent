@@ -13,64 +13,6 @@ import (
 	"github.com/tinylib/msgp/msgp"
 )
 
-func TestMarshalUnmarshalAppSecRule(t *testing.T) {
-	v := AppSecRule{}
-	bts, err := v.MarshalMsg(nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	left, err := v.UnmarshalMsg(bts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(left) > 0 {
-		t.Errorf("%d bytes left over after UnmarshalMsg(): %q", len(left), left)
-	}
-
-	left, err = msgp.Skip(bts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(left) > 0 {
-		t.Errorf("%d bytes left over after Skip(): %q", len(left), left)
-	}
-}
-
-func BenchmarkMarshalMsgAppSecRule(b *testing.B) {
-	v := AppSecRule{}
-	b.ReportAllocs()
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		v.MarshalMsg(nil)
-	}
-}
-
-func BenchmarkAppendMsgAppSecRule(b *testing.B) {
-	v := AppSecRule{}
-	bts := make([]byte, 0, v.Msgsize())
-	bts, _ = v.MarshalMsg(bts[0:0])
-	b.SetBytes(int64(len(bts)))
-	b.ReportAllocs()
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		bts, _ = v.MarshalMsg(bts[0:0])
-	}
-}
-
-func BenchmarkUnmarshalAppSecRule(b *testing.B) {
-	v := AppSecRule{}
-	bts, _ := v.MarshalMsg(nil)
-	b.ReportAllocs()
-	b.SetBytes(int64(len(bts)))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		_, err := v.UnmarshalMsg(bts)
-		if err != nil {
-			b.Fatal(err)
-		}
-	}
-}
-
 func TestMarshalUnmarshalAppSecRuleMatch(t *testing.T) {
 	v := AppSecRuleMatch{}
 	bts, err := v.MarshalMsg(nil)
@@ -129,8 +71,8 @@ func BenchmarkUnmarshalAppSecRuleMatch(b *testing.B) {
 	}
 }
 
-func TestMarshalUnmarshalAppSecRuleMatchParameter(t *testing.T) {
-	v := AppSecRuleMatchParameter{}
+func TestMarshalUnmarshalAppSecRuleParameter(t *testing.T) {
+	v := AppSecRuleParameter{}
 	bts, err := v.MarshalMsg(nil)
 	if err != nil {
 		t.Fatal(err)
@@ -152,8 +94,8 @@ func TestMarshalUnmarshalAppSecRuleMatchParameter(t *testing.T) {
 	}
 }
 
-func BenchmarkMarshalMsgAppSecRuleMatchParameter(b *testing.B) {
-	v := AppSecRuleMatchParameter{}
+func BenchmarkMarshalMsgAppSecRuleParameter(b *testing.B) {
+	v := AppSecRuleParameter{}
 	b.ReportAllocs()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -161,8 +103,8 @@ func BenchmarkMarshalMsgAppSecRuleMatchParameter(b *testing.B) {
 	}
 }
 
-func BenchmarkAppendMsgAppSecRuleMatchParameter(b *testing.B) {
-	v := AppSecRuleMatchParameter{}
+func BenchmarkAppendMsgAppSecRuleParameter(b *testing.B) {
+	v := AppSecRuleParameter{}
 	bts := make([]byte, 0, v.Msgsize())
 	bts, _ = v.MarshalMsg(bts[0:0])
 	b.SetBytes(int64(len(bts)))
@@ -173,8 +115,66 @@ func BenchmarkAppendMsgAppSecRuleMatchParameter(b *testing.B) {
 	}
 }
 
-func BenchmarkUnmarshalAppSecRuleMatchParameter(b *testing.B) {
-	v := AppSecRuleMatchParameter{}
+func BenchmarkUnmarshalAppSecRuleParameter(b *testing.B) {
+	v := AppSecRuleParameter{}
+	bts, _ := v.MarshalMsg(nil)
+	b.ReportAllocs()
+	b.SetBytes(int64(len(bts)))
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, err := v.UnmarshalMsg(bts)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+func TestMarshalUnmarshalAppSecRuleTrigger(t *testing.T) {
+	v := AppSecRuleTrigger{}
+	bts, err := v.MarshalMsg(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	left, err := v.UnmarshalMsg(bts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(left) > 0 {
+		t.Errorf("%d bytes left over after UnmarshalMsg(): %q", len(left), left)
+	}
+
+	left, err = msgp.Skip(bts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(left) > 0 {
+		t.Errorf("%d bytes left over after Skip(): %q", len(left), left)
+	}
+}
+
+func BenchmarkMarshalMsgAppSecRuleTrigger(b *testing.B) {
+	v := AppSecRuleTrigger{}
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		v.MarshalMsg(nil)
+	}
+}
+
+func BenchmarkAppendMsgAppSecRuleTrigger(b *testing.B) {
+	v := AppSecRuleTrigger{}
+	bts := make([]byte, 0, v.Msgsize())
+	bts, _ = v.MarshalMsg(bts[0:0])
+	b.SetBytes(int64(len(bts)))
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		bts, _ = v.MarshalMsg(bts[0:0])
+	}
+}
+
+func BenchmarkUnmarshalAppSecRuleTrigger(b *testing.B) {
+	v := AppSecRuleTrigger{}
 	bts, _ := v.MarshalMsg(nil)
 	b.ReportAllocs()
 	b.SetBytes(int64(len(bts)))

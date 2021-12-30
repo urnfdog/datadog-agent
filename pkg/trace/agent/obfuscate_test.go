@@ -58,15 +58,14 @@ func TestAppSecMetaStructHook(t *testing.T) {
 
 	t.Run("no creditcards", func(t *testing.T) {
 
-		appsec := pb.AppSecStruct{Triggers: []pb.AppSecTrigger{{
-			Rule: pb.AppSecRule{ID: "ua-000-01", Name: "Arachni"},
-			RuleMatches: []pb.AppSecRuleMatch{{
+		appsec := pb.AppSecStruct{Triggers: []*pb.AppSecTrigger{{
+			Rule: &pb.AppSecRuleTrigger{Id: "ua-000-01", Name: "Arachni"},
+			RuleMatches: []*pb.AppSecRuleMatch{{
 				Operator:      "regex_match",
 				OperatorValue: "Arachni",
-				Parameters: []pb.AppSecRuleMatchParameter{
+				Parameters: []*pb.AppSecRuleParameter{
 					{
 						Address:   "http.request.headers",
-						KeyPath:   []interface{}{"user-agent", 0},
 						Value:     "Arachni/v1",
 						Highlight: []string{"Arachni"},
 					},
@@ -85,15 +84,14 @@ func TestAppSecMetaStructHook(t *testing.T) {
 
 	t.Run("with creditcards", func(t *testing.T) {
 
-		appsec := pb.AppSecStruct{Triggers: []pb.AppSecTrigger{{
-			Rule: pb.AppSecRule{ID: "ua-000-01", Name: "5105-1051-0510-5100"},
-			RuleMatches: []pb.AppSecRuleMatch{{
+		appsec := pb.AppSecStruct{Triggers: []*pb.AppSecTrigger{{
+			Rule: &pb.AppSecRuleTrigger{Id: "ua-000-01", Name: "5105-1051-0510-5100"},
+			RuleMatches: []*pb.AppSecRuleMatch{{
 				Operator:      "regex_match",
 				OperatorValue: "Arachni",
-				Parameters: []pb.AppSecRuleMatchParameter{
+				Parameters: []*pb.AppSecRuleParameter{
 					{
 						Address:   "http.request.headers",
-						KeyPath:   []interface{}{"user-agent", 0},
 						Value:     "5105-1051-0510-5100",
 						Highlight: []string{"5105-1051-0510-5100"},
 					},
