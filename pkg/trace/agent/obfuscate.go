@@ -180,7 +180,8 @@ func (cco *ccObfuscator) MetaHook(k, v string) (newval string) {
 // MetaStructHook checks the tag with the given key and val and returns the final
 // value to be assigned to this tag.
 func (cco *ccObfuscator) MetaStructHook(k string, v []byte) (newval []byte) {
-	if k == "appsec" {
+	switch k {
+	case "appsec":
 		var obfuscated bool
 		var appsec pb.AppSecStruct
 		_, err := appsec.UnmarshalMsg(v)
@@ -213,9 +214,9 @@ func (cco *ccObfuscator) MetaStructHook(k string, v []byte) (newval []byte) {
 			}
 			return newval
 		}
-		return v
+	default:
+		// Do not obfuscate unknown structures
+		log.Debugf("Obfuscating unknown meta struct is not supported for key: %v", k)
 	}
-	// Do not obfuscate unknown structures
-	log.Debugf("Obfuscating unknown meta struct is not supported for key: %v", k)
 	return v
 }
