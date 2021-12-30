@@ -58,13 +58,13 @@ func (z *AppSecRuleMatch) UnmarshalMsg(bts []byte) (o []byte, err error) {
 		}
 		switch msgp.UnsafeString(field) {
 		case "operator":
-			z.Operator, bts, err = msgp.ReadStringBytes(bts)
+			z.Operator, bts, err = parseStringBytes(bts)
 			if err != nil {
 				err = msgp.WrapError(err, "Operator")
 				return
 			}
 		case "operator_value":
-			z.OperatorValue, bts, err = msgp.ReadStringBytes(bts)
+			z.OperatorValue, bts, err = parseStringBytes(bts)
 			if err != nil {
 				err = msgp.WrapError(err, "OperatorValue")
 				return
@@ -162,13 +162,13 @@ func (z *AppSecRuleParameter) UnmarshalMsg(bts []byte) (o []byte, err error) {
 		}
 		switch msgp.UnsafeString(field) {
 		case "address":
-			z.Address, bts, err = msgp.ReadStringBytes(bts)
+			z.Address, bts, err = parseStringBytes(bts)
 			if err != nil {
 				err = msgp.WrapError(err, "Address")
 				return
 			}
 		case "value":
-			z.Value, bts, err = msgp.ReadStringBytes(bts)
+			z.Value, bts, err = parseStringBytes(bts)
 			if err != nil {
 				err = msgp.WrapError(err, "Value")
 				return
@@ -186,7 +186,7 @@ func (z *AppSecRuleParameter) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				z.Highlight = make([]string, zb0002)
 			}
 			for za0001 := range z.Highlight {
-				z.Highlight[za0001], bts, err = msgp.ReadStringBytes(bts)
+				z.Highlight[za0001], bts, err = parseStringBytes(bts)
 				if err != nil {
 					err = msgp.WrapError(err, "Highlight", za0001)
 					return
@@ -252,13 +252,13 @@ func (z *AppSecRuleTrigger) UnmarshalMsg(bts []byte) (o []byte, err error) {
 		}
 		switch msgp.UnsafeString(field) {
 		case "id":
-			z.Id, bts, err = msgp.ReadStringBytes(bts)
+			z.Id, bts, err = parseStringBytes(bts)
 			if err != nil {
 				err = msgp.WrapError(err, "Id")
 				return
 			}
 		case "name":
-			z.Name, bts, err = msgp.ReadStringBytes(bts)
+			z.Name, bts, err = parseStringBytes(bts)
 			if err != nil {
 				err = msgp.WrapError(err, "Name")
 				return
@@ -281,12 +281,12 @@ func (z *AppSecRuleTrigger) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				var za0001 string
 				var za0002 string
 				zb0002--
-				za0001, bts, err = msgp.ReadStringBytes(bts)
+				za0001, bts, err = parseStringBytes(bts)
 				if err != nil {
 					err = msgp.WrapError(err, "Tags")
 					return
 				}
-				za0002, bts, err = msgp.ReadStringBytes(bts)
+				za0002, bts, err = parseStringBytes(bts)
 				if err != nil {
 					err = msgp.WrapError(err, "Tags", za0001)
 					return
