@@ -109,7 +109,7 @@ func TTYConstants(probe *Probe) []manager.ConstantEditor {
 }
 
 func getCredsDebugFieldsSize(probe *Probe) uint64 {
-	var size uint64 = 0
+	size := uint64(0)
 
 	switch {
 	case probe.kernelVersion.IsCOSKernel():
