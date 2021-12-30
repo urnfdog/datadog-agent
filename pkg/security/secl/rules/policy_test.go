@@ -140,6 +140,12 @@ func TestActionSetVariable(t *testing.T) {
 					Name:  "var9",
 					Field: "open.filename",
 				},
+			}, {
+				Set: &SetDefinition{
+					Name:   "var10",
+					Field:  "open.filename",
+					Append: true,
+				},
 			}},
 		}, {
 			ID: "test_rule2",
@@ -153,7 +159,8 @@ func TestActionSetVariable(t *testing.T) {
 				`123 in ${var6} && ` +
 				`"aaa" in ${var7} && ` +
 				`123 in ${var8} && ` +
-				`${var9} == "/tmp/test"`,
+				`${var9} == "/tmp/test" && ` +
+				`"/tmp/test" in ${var10}`,
 		}},
 	}
 
