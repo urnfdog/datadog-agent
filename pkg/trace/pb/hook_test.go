@@ -12,8 +12,8 @@ import (
 	"github.com/tinylib/msgp/msgp"
 )
 
-func TestMetaHook(t *testing.T) {
-	t.Run("off", func(t *testing.T) {
+func TestMetaHooks(t *testing.T) {
+	t.Run("meta off", func(t *testing.T) {
 		b := newEmptyMessage()
 		b = msgp.AppendString(b, "meta")
 		b = msgp.AppendMapHeader(b, 1)
@@ -22,13 +22,28 @@ func TestMetaHook(t *testing.T) {
 		s, err := decodeBytes(b)
 
 		assert := assert.New(t)
+		assert.False(HasMetaHooks())
 		assert.Nil(err)
 		assert.Equal(map[string]string{"card.number": "4166 6766 6766 6746"}, s.Meta)
 	})
 
-	t.Run("on", func(t *testing.T) {
-		SetMetaHook(func(k, v string) string { return "test" })
-		defer SetMetaHook(nil)
+	t.Run("meta struct off", func(t *testing.T) {
+		b := newEmptyMessage()
+		b = msgp.AppendString(b, "meta_struct")
+		b = msgp.AppendMapHeader(b, 1)
+		b = msgp.AppendString(b, "appsec")
+		b = msgp.AppendBytes(b, msgp.AppendString(nil, "4166 6766 6766 6746"))
+		s, err := decodeBytes(b)
+
+		assert := assert.New(t)
+		assert.False(HasMetaHooks())
+		assert.Nil(err)
+		assert.Equal(map[string][]byte{"appsec": msgp.AppendString(nil, "4166 6766 6766 6746")}, s.MetaStruct)
+	})
+
+	t.Run("meta on", func(t *testing.T) {
+		SetMetaHooks(func(k, v string) string { return "test" }, func(k string, v []byte) []byte { return msgp.AppendNil(nil) })
+		defer SetMetaHooks(nil, nil)
 
 		b := newEmptyMessage()
 		b = msgp.AppendString(b, "meta")
@@ -38,39 +53,25 @@ func TestMetaHook(t *testing.T) {
 		s, err := decodeBytes(b)
 
 		assert := assert.New(t)
+		assert.True(HasMetaHooks())
 		assert.Nil(err)
-		assert.Equal(map[string]string{"card.number": "test"}, s.Meta, "Warning! pkg/trace/pb: MetaHook was not applied. One possible cause is regenerating the code in this folder without porting custom modifications of it.")
-	})
-}
-
-func TestMetaStructHook(t *testing.T) {
-
-	t.Run("off", func(t *testing.T) {
-		b := newEmptyMessage()
-		b = msgp.AppendString(b, "meta_struct")
-		b = msgp.AppendMapHeader(b, 1)
-		b = msgp.AppendString(b, "appsec")
-		b = msgp.AppendBytes(b, msgp.AppendMapHeader(nil, 0))
-		s, err := decodeBytes(b)
-
-		assert := assert.New(t)
-		assert.Nil(err)
-		assert.Equal(map[string][]byte{"appsec": {0x80}}, s.MetaStruct)
+		assert.Equal(map[string]string{"card.number": "test"}, s.Meta, "Warning! pkg/trace/pb: MetaHooks were not applied. One possible cause is regenerating the code in this folder without porting custom modifications of it.")
 	})
 
-	t.Run("on", func(t *testing.T) {
-		SetMetaStructHook(func(k string, v []byte) []byte { return msgp.AppendNil(nil) })
-		defer SetMetaStructHook(nil)
+	t.Run("meta struct on", func(t *testing.T) {
+		SetMetaHooks(func(k, v string) string { return "test" }, func(k string, v []byte) []byte { return msgp.AppendNil(nil) })
+		defer SetMetaHooks(nil, nil)
 
 		b := newEmptyMessage()
 		b = msgp.AppendString(b, "meta_struct")
 		b = msgp.AppendMapHeader(b, 1)
 		b = msgp.AppendString(b, "appsec")
-		b = msgp.AppendBytes(b, msgp.AppendMapHeader(nil, 0))
+		b = msgp.AppendBytes(b, msgp.AppendString(nil, "4166 6766 6766 6746"))
 		s, err := decodeBytes(b)
 
 		assert := assert.New(t)
+		assert.True(HasMetaHooks())
 		assert.Nil(err)
-		assert.True(msgp.IsNil(s.MetaStruct["appsec"]))
+		assert.True(msgp.IsNil(s.MetaStruct["appsec"]), "Warning! pkg/trace/pb: MetaHooks were not applied. One possible cause is regenerating the code in this folder without porting custom modifications of it.")
 	})
 }

@@ -581,9 +581,9 @@ func (r *HTTPReceiver) handleTraces(v Version, w http.ResponseWriter, req *http.
 		// a deprecated endpoint or Content-Type, or, a new decoder was implemented and the
 		// the hook was not added.
 		log.Debug("Decoded the request without running pb.MetaHook. If this is a newly implemented endpoint, please make sure to run it!")
-		if _, ok := pb.MetaHook(); ok {
+		if pb.HasMetaHooks() {
 			log.Warn("Received request on deprecated API endpoint or Content-Type. Performance is degraded. If you think this is an error, please contact support with this message.")
-			runMetaHook(tp.Chunks)
+			runMetaHooks(tp.Chunks)
 		}
 	}
 	if n, ok := r.replyOK(v, w); ok {
@@ -627,8 +627,8 @@ func (r *HTTPReceiver) handleTraces(v Version, w http.ResponseWriter, req *http.
 	}
 }
 
-// runMetaHook runs the pb.MetaHook on all spans from traces.
-func runMetaHook(chunks []*pb.TraceChunk) {
+// runMetaHooks runs pb.MetaHook and pb.MetaStructHook on all spans from traces.
+func runMetaHooks(chunks []*pb.TraceChunk) {
 	metahook, metahookOK := pb.MetaHook()
 	metastructhook, metastructhookOK := pb.MetaStructHook()
 	if !metahookOK && !metastructhookOK {
@@ -645,9 +645,7 @@ func runMetaHook(chunks []*pb.TraceChunk) {
 			}
 			if metastructhookOK {
 				for k, v := range span.MetaStruct {
-					if newv := metastructhook(k, v); newv != nil {
-						span.MetaStruct[k] = newv
-					}
+					span.MetaStruct[k] = metastructhook(k, v)
 				}
 			}
 		}

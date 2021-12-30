@@ -125,13 +125,12 @@ func newCreditCardsObfuscator(cfg config.CreditCardsConfig) *ccObfuscator {
 	cco := &ccObfuscator{luhn: cfg.Luhn}
 	if cfg.Enabled {
 		// obfuscator disabled
-		pb.SetMetaHook(cco.MetaHook)
-		pb.SetMetaStructHook(cco.MetaStructHook)
+		pb.SetMetaHooks(cco.MetaHook, cco.MetaStructHook)
 	}
 	return cco
 }
 
-func (cco *ccObfuscator) Stop() { pb.SetMetaHook(nil) }
+func (cco *ccObfuscator) Stop() { pb.SetMetaHooks(nil, nil) }
 
 // MetaHook checks the tag with the given key and val and returns the final
 // value to be assigned to this tag.
