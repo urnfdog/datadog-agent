@@ -238,7 +238,7 @@ func (m *AppSecRuleTrigger) MarshalTo(data []byte) (int, error) {
 		i += copy(data[i:], m.Name)
 	}
 	if len(m.Tags) > 0 {
-		for k, _ := range m.Tags {
+		for k := range m.Tags {
 			data[i] = 0x1a
 			i++
 			v := m.Tags[k]
