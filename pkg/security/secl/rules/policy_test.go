@@ -32,20 +32,20 @@ type testStateScope struct {
 
 func (t *testStateScope) GetVariable(name string, value interface{}) (eval.VariableValue, error) {
 	switch value.(type) {
-	case int:
-		intVar := eval.NewIntVariable(func(ctx *eval.Context) int {
+	case []int:
+		intVar := eval.NewIntArrayVariable(func(ctx *eval.Context) []int {
 			processName := (*testEvent)(ctx.Object).process.name
 			processVars, found := t.vars[processName]
 			if !found {
-				return 0
+				return nil
 			}
 
 			v, found := processVars[name]
 			if !found {
-				return 0
+				return nil
 			}
 
-			i, _ := v.(int)
+			i, _ := v.([]int)
 			return i
 		}, func(ctx *eval.Context, value interface{}) error {
 			processName := (*testEvent)(ctx.Object).process.name
