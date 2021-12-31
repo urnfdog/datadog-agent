@@ -111,6 +111,7 @@ type RuleSet struct {
 	eventRuleBuckets map[eval.EventType]*RuleBucket
 	rules            map[eval.RuleID]*Rule
 	macros           map[eval.RuleID]*Macro
+	fieldEvaluators  map[string]eval.Evaluator
 	model            eval.Model
 	eventCtor        func() eval.Event
 	listeners        []RuleSetListener
@@ -283,6 +284,19 @@ func (rs *RuleSet) AddRule(ruleDef *RuleDefinition) (*eval.Rule, error) {
 
 	rs.rules[ruleDef.ID] = rule
 
+	// Generate evaluator for fields that are used in variables
+	for _, action := range rule.Definition.Actions {
+		if action.Set != nil && action.Set.Field != "" {
+			if _, found := rs.fieldEvaluators[action.Set.Field]; !found {
+				evaluator, err := rs.model.GetEvaluator(action.Set.Field, "")
+				if err != nil {
+					return nil, err
+				}
+				rs.fieldEvaluators[action.Set.Field] = evaluator
+			}
+		}
+	}
+
 	return rule.Rule, nil
 }
 
@@ -406,14 +420,10 @@ func (rs *RuleSet) runRuleActions(ctx *eval.Context, rule *Rule) error {
 
 			if mutable, ok := variable.(eval.MutableVariable); ok {
 				value := action.Set.Value
-				if value == nil {
-					// TODO(lebauce): cache evaluators
-					evaluator, err := rs.model.GetEvaluator(action.Set.Field, "")
-					if err != nil {
-						return err
+				if field := action.Set.Field; field != "" {
+					if evaluator := rs.fieldEvaluators[field]; evaluator != nil {
+						value = evaluator.Eval(ctx)
 					}
-
-					value = evaluator.Eval(ctx)
 				}
 
 				if action.Set.Append {
@@ -553,5 +563,6 @@ func NewRuleSet(model eval.Model, eventCtor func() eval.Event, opts *Opts) *Rule
 		loadedPolicies:   make(map[string]string),
 		logger:           logger,
 		pool:             eval.NewContextPool(),
+		fieldEvaluators:  make(map[string]eval.Evaluator),
 	}
 }
