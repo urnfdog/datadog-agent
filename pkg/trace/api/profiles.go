@@ -106,8 +106,6 @@ func errorHandler(err error) http.Handler {
 // For more details please see multiTransport.
 func newProfileProxy(transport http.RoundTripper, targets []*url.URL, keys []string, tags string) *httputil.ReverseProxy {
 	director := func(req *http.Request) {
-		req.Close = true
-		req.Header.Set("Connection", "close")
 		req.Header.Set("Via", fmt.Sprintf("trace-agent %s", info.Version))
 		if _, ok := req.Header["User-Agent"]; !ok {
 			// explicitly disable User-Agent so it's not set to the default value
@@ -145,9 +143,12 @@ type multiTransport struct {
 
 func (m *multiTransport) RoundTrip(req *http.Request) (rresp *http.Response, rerr error) {
 	setTarget := func(r *http.Request, u *url.URL, apiKey string) {
+		r.Close = true
+		r.Header.Set("Connection", "close")
 		r.Host = u.Host
 		r.URL = u
 		r.Header.Set("DD-API-KEY", apiKey)
+		log.Info("Setting new target to " + u.String())
 	}
 	defer func() {
 		if rresp != nil {
