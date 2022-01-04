@@ -35,7 +35,7 @@ func dumpFrom(ch chan workloadmeta.EventBundle) {
 		close(eventBundle.Ch)
 
 		for i, evt := range eventBundle.Events {
-			prefix := fmt.Sprintf("WLM %d/%d", bundleCount, i)
+			prefix := fmt.Sprintf("WLM bundle-%d/evt-%d", bundleCount, i)
 			dumpEvent(prefix, evt)
 		}
 		bundleCount++
