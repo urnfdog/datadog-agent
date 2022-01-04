@@ -105,7 +105,7 @@ type Entity interface {
 	Merge(Entity) error
 
 	// DeepCopy copies an entity such that modifications of the copy will not
-	// affet the original.
+	// affect the original.
 	DeepCopy() Entity
 
 	// String provides a summary of the entity.  The string may span several lines,

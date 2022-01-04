@@ -4,16 +4,19 @@ This package is responsible for gathering information about workloads and dissem
 
 ## Entities
 
-An _Entity_ represents a single unit of work being done by a piece of software, like a process, a container, a kubernetes pod, or a task in any cloud provider, that the agent would like to observe.
+An _Entity_ represents a single unit of work being done by a piece of software, like a process, a container, a Kubernetes pod, or a task in any cloud provider, that the agent would like to observe.
 The current workload of a host or cluster is represented by the current set of entities.
 
 Each _Entity_ has a unique _EntityID_, composed of a _Kind_ and an ID.
-Supported kinds include container, pod, and task.
+Examples of kinds include container, pod, and task.
 
 ## Sources
 
-The service monitors information from many external _sources_, such as Kubelet or Podman.
-Multiple sources may report information about the same entity.
+The Workloadmeta Store monitors information from various _sources_. 
+Examples of sources include container runtimes and orchestrators.
+
+Multiple sources may generate events about the same entity.
+When this occurs, information from those sources is merged into one entity.
 
 ## Store
 
@@ -24,9 +27,21 @@ Collectors can either poll for updates, or translate a stream of events from the
 
 The store provides information to other components either through subscriptions or by querying the current state.
 
+### Subscription
+
 Subscription provides a channel containing event bundles.
 Each event in a bundle is either a "set" or "unset".
-A "set" event indicates new information about an entity -- either a new entity, or an update to an existing enityt.
+A "set" event indicates new information about an entity -- either a new entity, or an update to an existing entity.
 An "unset" event indicates that an entity no longer exists.
 The first event bundle to each subscriber contains a "set" event for each existing entity at that time.
 It's safe to assume that this first bundle corresponds to entities that existed before the agent started.
+
+## Telemetry and Debugging
+
+The Workloadmeta Store produces agent telemetry measuring the behavior of the component.
+The metrics are defined in `pkg/workloadmeta/telemetry/telemetry.go`
+
+The `agent workload-list` command will print the workload content of a running agent.
+
+The code in `pkg/workloadmeta/dumper` logs all events verbosely, and may be useful when debugging new collectors.
+It is not built by default; see the comments in the package for how to set it up.
