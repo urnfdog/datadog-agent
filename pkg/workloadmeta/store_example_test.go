@@ -3,7 +3,7 @@ package workloadmeta
 import "fmt"
 
 func ExampleStore_Subscribe() {
-	filter := NewFilter([]Kind{KindContainer}, []Source{SourceContainerd})
+	filter := NewFilter([]Kind{KindContainer}, SourceRuntime)
 	ch := GetGlobalStore().Subscribe("test", filter)
 
 	go func() {
