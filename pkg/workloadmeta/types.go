@@ -568,10 +568,7 @@ type Event struct {
 	// When Type is EventTypeSet, this represents an added or updated entity.
 	// Multiple set events may be sent for a single entity.
 	//
-	// When Type is EventTypeUnset, this represents either a removed entity or
-	// a single source removing its information about an entity.  Multiple
-	// unset events may be sent for a single entity, if multiple sources
-	// provided information about it.
+	// When Type is EventTypeUnset, this represents a removed entity.
 	Type EventType
 
 	// Entity is the entity involved in this event.  For a set event, this may
@@ -579,8 +576,10 @@ type Event struct {
 	// Sources field.  For an unset event, it may contain incomplete information,
 	// perhaps only an EntityID.
 	//
-	// This field is typically cast to a concrete type corresponding to its kind
-	// (Entity.GetID().Kind).
+	// For Type == EventTypeSet, this field can be cast unconditionally to the
+	// concrete type corresponding to its kind (Entity.GetID().Kind).  For Type
+	// == EventTypeUnset, only the Entity ID is available and such a cast will
+	// panic.
 	Entity Entity
 }
 

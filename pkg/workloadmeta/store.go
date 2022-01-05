@@ -50,15 +50,9 @@ type Store interface {
 	// distinction, but may be useful for decisions such as whether to begin
 	// logging at the head or tail of an entity's logs.
 	//
-	// When more than one source provides information about an entity in a
-	// EventTypeSet event, the information from all sources included by the
-	// filter will be merged into one entity, and the event's Sources property
-	// will contain the names of all associated sources.
-	//
-	// EventTypeUnset events contain only information from a single source, and
-	// the entity contains only the information provided by that source.  An unset
-	// event is sent as each source removes its information for an entity, so an
-	// entity with multiple sources may result in multiple unset events.
+	// Multiple EventTypeSet messages may be sent, either as the entity's state
+	// evolves or as information about the entity is reported from multiple
+	// sources (such as a container runtime and an orchestrator).
 	//
 	// See the documentation for EventBundle regarding appropropriate handling
 	// for messages on this channel.
