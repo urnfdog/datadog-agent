@@ -27,11 +27,11 @@ func savePolicy(filename string, testPolicy *Policy) error {
 	return ioutil.WriteFile(filename, yamlBytes, 0700)
 }
 
-type testStateScope struct {
+type testVariableProvider struct {
 	vars map[string]map[string]interface{}
 }
 
-func (t *testStateScope) GetVariable(name string, value interface{}) (eval.VariableValue, error) {
+func (t *testVariableProvider) GetVariable(name string, value interface{}) (eval.VariableValue, error) {
 	switch value.(type) {
 	case []int:
 		intVar := eval.NewIntArrayVariable(func(ctx *eval.Context) []int {
@@ -65,9 +65,11 @@ func (t *testStateScope) GetVariable(name string, value interface{}) (eval.Varia
 
 func TestActionSetVariable(t *testing.T) {
 	enabled := map[eval.EventType]bool{"*": true}
-	stateScopes := map[Scope]StateScope{
-		"process": &testStateScope{
-			vars: map[string]map[string]interface{}{},
+	stateScopes := map[Scope]VariableProviderFactory{
+		"process": func() VariableProvider {
+			return &testVariableProvider{
+				vars: map[string]map[string]interface{}{},
+			}
 		},
 	}
 	var opts Opts
@@ -215,18 +217,12 @@ func TestActionSetVariable(t *testing.T) {
 
 func TestActionSetVariableConflict(t *testing.T) {
 	enabled := map[eval.EventType]bool{"*": true}
-	stateScopes := map[Scope]StateScope{
-		"process": &testStateScope{
-			vars: map[string]map[string]interface{}{},
-		},
-	}
 	var opts Opts
 	opts.
 		WithConstants(testConstants).
 		WithSupportedDiscarders(testSupportedDiscarders).
 		WithEventTypeEnabled(enabled).
 		WithVariables(make(map[string]eval.VariableValue)).
-		WithStateScopes(stateScopes).
 		WithMacros(make(map[eval.MacroID]*eval.Macro))
 	rs := NewRuleSet(&testModel{}, func() eval.Event { return &testEvent{} }, &opts)
 
@@ -271,18 +267,12 @@ func TestActionSetVariableConflict(t *testing.T) {
 
 func loadPolicy(t *testing.T, testPolicy *Policy) *multierror.Error {
 	enabled := map[eval.EventType]bool{"*": true}
-	stateScopes := map[Scope]StateScope{
-		"process": &testStateScope{
-			vars: map[string]map[string]interface{}{},
-		},
-	}
 	var opts Opts
 	opts.
 		WithConstants(testConstants).
 		WithSupportedDiscarders(testSupportedDiscarders).
 		WithEventTypeEnabled(enabled).
 		WithVariables(make(map[string]eval.VariableValue)).
-		WithStateScopes(stateScopes).
 		WithMacros(make(map[eval.MacroID]*eval.Macro))
 	rs := NewRuleSet(&testModel{}, func() eval.Event { return &testEvent{} }, &opts)
 
