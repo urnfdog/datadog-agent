@@ -1111,22 +1111,6 @@ func NewProbe(config *config.Config, client *statsd.Client) (*Probe, error) {
 			Name:  "check_helper_call_input",
 			Value: getCheckHelperCallInputType(p),
 		},
-		manager.ConstantEditor{
-			Name:  "net_device_ifindex_offset",
-			Value: getNetDeviceIfindexOffset(p),
-		},
-		manager.ConstantEditor{
-			Name:  "net_ns_offset",
-			Value: getNetNSOffset(p),
-		},
-		manager.ConstantEditor{
-			Name:  "sock_common_skc_net_offset",
-			Value: getSockCommonSKCNetOffset(p),
-		},
-		manager.ConstantEditor{
-			Name:  "socket_sock_offset",
-			Value: getSocketSockOffset(p),
-		},
 	)
 	p.managerOptions.ConstantEditors = append(p.managerOptions.ConstantEditors, DiscarderConstants...)
 	p.managerOptions.ConstantEditors = append(p.managerOptions.ConstantEditors, getCGroupWriteConstants())
@@ -1192,5 +1176,10 @@ func getOffsetConstants(config *config.Config, probe *Probe) (map[string]uint64,
 	constantFetcher.AppendOffsetofRequest("sb_magic_offset", "struct super_block", "s_magic", "linux/fs.h")
 	constantFetcher.AppendOffsetofRequest("tty_offset", "struct signal_struct", "tty", "linux/sched/signal.h")
 	constantFetcher.AppendOffsetofRequest("tty_name_offset", "struct tty_struct", "name", "linux/tty.h")
+	// network related constants
+	constantFetcher.AppendOffsetofRequest("net_device_ifindex_offset", "struct net_device", "ifindex", "linux/netdevice.h")
+	constantFetcher.AppendOffsetofRequest("net_ns_offset", "struct net", "ns", "net/net_namespace.h")
+	constantFetcher.AppendOffsetofRequest("sock_common_skc_net_offset", "struct sock_common", "skc_net", "net/sock.h")
+	constantFetcher.AppendOffsetofRequest("socket_sock_offset", "struct socket", "sk", "linux/net.h")
 	return constantFetcher.FinishAndGetResults()
 }
