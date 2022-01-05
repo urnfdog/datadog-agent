@@ -45,8 +45,10 @@ type Store interface {
 	//
 	// The first message on the channel is special: it contains an EventTypeSet
 	// event for each entity currently in the store.  If the Subscribe call
-	// occurs during agent startup, then it is safe to assume that entities
-	// referenced in the first message were running before the agent started.
+	// occurs at agent startup, then the first message approximates entities
+	// that were running before the agent started.  This is an inherently racy
+	// distinction, but may be useful for decisions such as whether to begin
+	// logging at the head or tail of an entity's logs.
 	//
 	// When more than one source provides information about an entity in a
 	// EventTypeSet event, the information from all sources included by the
