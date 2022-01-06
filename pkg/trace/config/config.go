@@ -319,7 +319,7 @@ func (c *AgentConfig) NewHTTPTransport() *http.Transport {
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: c.SkipSSLValidation,
-			KeyLogWriter:       keyLogWriter
+			KeyLogWriter:       keyLogWriter,
 		},
 		// below field values are from http.DefaultTransport (go1.12)
 		Proxy: http.ProxyFromEnvironment,
