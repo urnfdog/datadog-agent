@@ -298,11 +298,29 @@ func (c *AgentConfig) NewHTTPClient() *http.Client {
 	}
 }
 
+var (
+	keyLogWriterInit sync.Once
+	keyLogWriter     io.Writer
+)
+
 // NewHTTPTransport returns a new http.Transport to be used for outgoing connections to
 // the Datadog API.
 func (c *AgentConfig) NewHTTPTransport() *http.Transport {
+	keyLogWriterInit.Do(func() {
+		sslKeyLogFile := config.Datadog.GetString("sslkeylogfile")
+		if sslKeyLogFile != "" {
+			var err error
+			keyLogWriter, err = os.OpenFile(sslKeyLogFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+			if err != nil {
+				log.Warnf("Failed to open %s for writing NSS keys: %v", sslKeyLogFile, err)
+			}
+		}
+	})
 	transport := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: c.SkipSSLValidation},
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: c.SkipSSLValidation,
+			KeyLogWriter:       keyLogWriter
+		},
 		// below field values are from http.DefaultTransport (go1.12)
 		Proxy: http.ProxyFromEnvironment,
 		DialContext: (&net.Dialer{
