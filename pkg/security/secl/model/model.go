@@ -83,11 +83,10 @@ func (m *Model) ValidateField(field eval.Field, fieldValue eval.FieldValue) erro
 		if value := fieldValue.Value; value != -int(syscall.EPERM) && value != -int(syscall.EACCES) {
 			return errors.New("return value can only be tested against EPERM or EACCES")
 		}
-	case "bpf.map.name":
-	case "bpf.prog.name":
+	case "bpf.map.name", "bpf.prog.name":
 		if value, ok := fieldValue.Value.(string); ok {
 			if len(value) > MaxBpfObjName {
-				return errors.New("")
+				return fmt.Errorf("the name provided in %s must be at most %d characters, len(\"%s\") = %d", field, MaxBpfObjName, value, len(value))
 			}
 		}
 	}
