@@ -107,6 +107,7 @@ func TestAppSecMetaStructHook(t *testing.T) {
 		assert.Equal(t, "?", appsecstruct.Triggers[0].RuleMatches[0].Parameters[0].Value)
 		assert.Equal(t, []string{"?"}, appsecstruct.Triggers[0].RuleMatches[0].Parameters[0].Highlight)
 	})
+
 	t.Run("unknown", func(t *testing.T) {
 		data := []byte{0x80}
 		v := cco.MetaStructHook("unknown", data)
