@@ -32,12 +32,6 @@ var v3App1 = cfclient.V3App{
 	},
 }
 
-var cfApp1 = CFApp{
-	Name:      "name_of_app_cc",
-	Tags:      []string{"env:test-env", "service:test-service"},
-	SpaceGUID: "space_guid_1",
-}
-
 var v3App2 = cfclient.V3App{
 	Name:          "app2",
 	State:         "running",
@@ -53,20 +47,10 @@ var v3App2 = cfclient.V3App{
 	},
 }
 
-var cfApp2 = CFApp{
-	Name:      "app2",
-	SpaceGUID: "space_guid_2",
-}
-
 var v3Space1 = cfclient.V3Space{
 	Name:          "space_name_1",
 	GUID:          "space_guid_1",
 	Relationships: map[string]cfclient.V3ToOneRelationship{"organization": {Data: cfclient.V3Relationship{GUID: "org_guid_1"}}},
-}
-
-var cfSpace1 = CFSpace{
-	Name:    "space_name_1",
-	OrgGUID: "org_guid_1",
 }
 
 var v3Space2 = cfclient.V3Space{
@@ -80,8 +64,9 @@ var v3Org1 = cfclient.V3Organization{
 	GUID: "org_guid_1",
 }
 
-var cfOrg1 = CFOrg{
-	Name: "org_name_1",
+var v3Org2 = cfclient.V3Organization{
+	Name: "org_name_2",
+	GUID: "org_guid_2",
 }
 
 var cfOrgQuota1 = cfclient.OrgQuota{
@@ -92,11 +77,6 @@ var cfOrgQuota1 = cfclient.OrgQuota{
 var cfOrgQuota2 = cfclient.OrgQuota{
 	Guid: "org_quota_guid_2",
 	Name: "org_quota_name_2",
-}
-
-var v3Org2 = cfclient.V3Organization{
-	Name: "org_name_2",
-	GUID: "org_guid_2",
 }
 
 var cfProcess1 = cfclient.Process{
@@ -323,21 +303,6 @@ func TestADIdentifier(t *testing.T) {
 			assert.EqualValues(t, tc.expected, i.String())
 		})
 	}
-}
-
-func TestCFAppFromV3App(t *testing.T) {
-	result := CFAppFromV3App(&v3App1)
-	assert.EqualValues(t, cfApp1, *result)
-}
-
-func TestCFSpaceFromV3Space(t *testing.T) {
-	result := CFSpaceFromV3Space(&v3Space1)
-	assert.EqualValues(t, cfSpace1, *result)
-}
-
-func TestCFOrgFromV3Organization(t *testing.T) {
-	result := CFOrgFromV3Organization(&v3Org1)
-	assert.EqualValues(t, cfOrg1, *result)
 }
 
 func TestActualLRPFromBBSModel(t *testing.T) {

@@ -143,62 +143,9 @@ type CFApplication struct {
 	Annotations    map[string]string
 }
 
-// CFApp carries the necessary data about a CF App obtained from the CC API
-type CFApp struct {
-	Name      string
-	SpaceGUID string
-	Tags      []string
-}
-
-// CFOrg carries the necessary data about a CF Org obtained from the CC API
-type CFOrg struct {
-	Name string
-}
-
-// CFSpace carries the necessary data about a CF Space obtained from the CC API
-type CFSpace struct {
-	Name    string
-	OrgGUID string
-}
-
 type CFOrgQuota struct {
 	GUID        string
 	MemoryLimit int
-}
-
-func CFAppFromV3App(app *cfclient.V3App) *CFApp {
-	tags := extractTagsFromAppMeta(app.Metadata.Labels)
-	tags = append(tags, extractTagsFromAppMeta(app.Metadata.Annotations)...)
-	var spaceGUID string
-	if s, ok := app.Relationships["space"]; ok {
-		spaceGUID = s.Data.GUID
-	} else {
-		log.Debugf("Failed to get space GUID for app %s", app.Name)
-	}
-	return &CFApp{
-		Name:      app.Name,
-		Tags:      tags,
-		SpaceGUID: spaceGUID,
-	}
-}
-
-func CFSpaceFromV3Space(space *cfclient.V3Space) *CFSpace {
-	var orgGUID string
-	if s, ok := space.Relationships["organization"]; ok {
-		orgGUID = s.Data.GUID
-	} else {
-		log.Debugf("Failed to get org GUID for space %s", space.Name)
-	}
-	return &CFSpace{
-		Name:    space.Name,
-		OrgGUID: orgGUID,
-	}
-}
-
-func CFOrgFromV3Organization(org *cfclient.V3Organization) *CFOrg {
-	return &CFOrg{
-		Name: org.Name,
-	}
 }
 
 // ActualLRPFromBBSModel creates a new ActualLRP from BBS's ActualLRP model
@@ -319,7 +266,7 @@ func DesiredLRPFromBBSModel(bbsLRP *models.DesiredLRP, includeList, excludeList 
 			spaceGUID = ccApp.Relationships["space"].Data.GUID
 			if space, err := ccCache.GetSpace(spaceGUID); err == nil {
 				spaceName = space.Name
-				orgGUID = ccApp.Relationships["space"].Data.GUID
+				orgGUID = space.Relationships["organization"].Data.GUID
 			} else {
 				log.Debugf("Could not find space %s in cc cache", spaceGUID)
 			}
@@ -527,7 +474,7 @@ func (a *CFApplication) extractDataFromV3Space(data *cfclient.V3Space) {
 	a.SpaceName = data.Name
 	a.OrgGUID = data.Relationships["organization"].Data.GUID
 
-	// Set space labels and annotations only if they're not overriden per application
+	// Set space labels and annotations only if they're not overridden per application
 	for key, value := range data.Metadata.Annotations {
 		if _, ok := a.Annotations[key]; !ok {
 			a.Annotations[key] = value
@@ -543,7 +490,7 @@ func (a *CFApplication) extractDataFromV3Space(data *cfclient.V3Space) {
 func (a *CFApplication) extractDataFromV3Org(data *cfclient.V3Organization) {
 	a.OrgName = data.Name
 
-	// Set org labels and annotations only if they're not overriden per space or application
+	// Set org labels and annotations only if they're not overridden per space or application
 	for key, value := range data.Metadata.Annotations {
 		if _, ok := a.Annotations[key]; !ok {
 			a.Annotations[key] = value

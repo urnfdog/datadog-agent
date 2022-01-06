@@ -37,9 +37,9 @@ func TestCCCachePolling(t *testing.T) {
 
 func TestCCCache_GetApp(t *testing.T) {
 	app1, _ := cc.GetApp("random_app_guid")
-	assert.EqualValues(t, cfApp1, *app1)
+	assert.EqualValues(t, v3App1, *app1)
 	app2, _ := cc.GetApp("guid2")
-	assert.EqualValues(t, cfApp2, *app2)
+	assert.EqualValues(t, v3App2, *app2)
 	_, err := cc.GetApp("not-existing-guid")
 	assert.NotNil(t, err)
 }
