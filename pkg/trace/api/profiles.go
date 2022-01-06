@@ -144,6 +144,7 @@ type multiTransport struct {
 func (m *multiTransport) RoundTrip(req *http.Request) (rresp *http.Response, rerr error) {
 	setTarget := func(r *http.Request, u *url.URL, apiKey string) {
 		r.Close = true
+		r.Header.Set("Connection", "close")
 		r.Host = u.Host
 		r.URL = u
 		r.Header.Set("DD-API-KEY", apiKey)
