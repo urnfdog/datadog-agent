@@ -113,6 +113,7 @@ func TestAppSecMetaStructHook(t *testing.T) {
 		v := cco.MetaStructHook("unknown", data)
 		assert.Equal(t, data, v)
 	})
+
 	t.Run("invalid", func(t *testing.T) {
 		data := []byte{0x80}
 		v := cco.MetaStructHook("appsec", data)
