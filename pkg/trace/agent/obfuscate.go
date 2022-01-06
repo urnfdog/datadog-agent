@@ -194,11 +194,7 @@ func (cco *ccObfuscator) MetaStructHook(k string, v []byte) (newval []byte) {
 		log.Errorf("Error obfuscating appsec struct: %v", err)
 		return v
 	}
-	triggers := appsecstruct.GetTriggers()
-	if triggers == nil {
-		return v
-	}
-	for _, trigger := range triggers {
+	for _, trigger := range appsecstruct.GetTriggers() {
 		for _, rulematch := range trigger.GetRuleMatches() {
 			for _, parameter := range rulematch.GetParameters() {
 				if obfuscate.IsCardNumber(parameter.Value, cco.luhn) {
