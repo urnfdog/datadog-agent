@@ -204,11 +204,7 @@ func (cco *ccObfuscator) MetaStructHook(k string, v []byte) (newval []byte) {
 			continue
 		}
 		for _, rulematch := range matches {
-			parameters := rulematch.GetParameters()
-			if parameters == nil {
-				continue
-			}
-			for _, parameter := range parameters {
+			for _, parameter := range rulematch.GetParameters() {
 				if obfuscate.IsCardNumber(parameter.Value, cco.luhn) {
 					parameter.Value = "?"
 					changed = true
