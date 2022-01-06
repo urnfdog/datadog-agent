@@ -179,60 +179,59 @@ func (cco *ccObfuscator) MetaHook(k, v string) (newval string) {
 
 // MetaStructHook checks the message inside `v` for credit card information and obfuscates it.
 func (cco *ccObfuscator) MetaStructHook(k string, v []byte) (newval []byte) {
-	switch k {
-	case "appsec":
-		var (
-			changed      bool
-			appsecstruct pb.AppSecStruct
-		)
-		_, err := appsecstruct.UnmarshalMsg(v)
-		if err != nil {
-			// Not an appsec struct, ignore the value and log an error
-			log.Errorf("Error obfuscating appsec struct: %v", err)
-			return v
-		}
-		triggers := appsecstruct.GetTriggers()
-		if triggers == nil {
-			return v
-		}
-		for _, trigger := range triggers {
-			matches := trigger.GetRuleMatches()
-			if matches == nil {
-				continue
-			}
-			for _, rulematch := range matches {
-				parameters := rulematch.GetParameters()
-				if parameters == nil {
-					continue
-				}
-				for _, parameter := range parameters {
-					if obfuscate.IsCardNumber(parameter.Value, cco.luhn) {
-						parameter.Value = "?"
-						changed = true
-					}
-					if parameter.Highlight == nil {
-						continue
-					}
-					for j, highlight := range parameter.Highlight {
-						if obfuscate.IsCardNumber(highlight, cco.luhn) {
-							parameter.Highlight[j] = "?"
-							changed = true
-						}
-					}
-				}
-			}
-		}
-		if changed {
-			newval, err := appsecstruct.MarshalMsg(nil)
-			if err != nil {
-				log.Errorf("Error replacing obfuscated appsec struct: %v", err)
-				return v
-			}
-			return newval
-		}
-	default:
+	if k != "appsec" {
 		// Do not obfuscate unknown structures
 		log.Debugf("Obfuscating unknown meta struct is not supported for key: %v", k)
+		return v
+	}
+	var (
+		changed      bool
+		appsecstruct pb.AppSecStruct
+	)
+	_, err := appsecstruct.UnmarshalMsg(v)
+	if err != nil {
+		// Not an appsec struct, ignore the value and log an error
+		log.Errorf("Error obfuscating appsec struct: %v", err)
+		return v
+	}
+	triggers := appsecstruct.GetTriggers()
+	if triggers == nil {
+		return v
+	}
+	for _, trigger := range triggers {
+		matches := trigger.GetRuleMatches()
+		if matches == nil {
+			continue
+		}
+		for _, rulematch := range matches {
+			parameters := rulematch.GetParameters()
+			if parameters == nil {
+				continue
+			}
+			for _, parameter := range parameters {
+				if obfuscate.IsCardNumber(parameter.Value, cco.luhn) {
+					parameter.Value = "?"
+					changed = true
+				}
+				if parameter.Highlight == nil {
+					continue
+				}
+				for j, highlight := range parameter.Highlight {
+					if obfuscate.IsCardNumber(highlight, cco.luhn) {
+						parameter.Highlight[j] = "?"
+						changed = true
+					}
+				}
+			}
+		}
+	}
+	if changed {
+		newval, err := appsecstruct.MarshalMsg(nil)
+		if err != nil {
+			log.Errorf("Error replacing obfuscated appsec struct: %v", err)
+			return v
+		}
+		return newval
 	}
 	return v
 }
