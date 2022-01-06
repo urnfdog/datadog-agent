@@ -78,6 +78,7 @@ func TestAppSecMetaStructHook(t *testing.T) {
 		}
 		assert.Equal(t, appsecb, cco.MetaStructHook("appsec", appsecb))
 	})
+	
 	t.Run("creditcard", func(t *testing.T) {
 		appsecstruct := pb.AppSecStruct{Triggers: []*pb.AppSecTrigger{{
 			Rule: &pb.AppSecRuleTrigger{Id: "ua-000-01", Name: "5105-1051-0510-5100"},
