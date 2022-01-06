@@ -55,6 +55,7 @@ func TestMetaHook(t *testing.T) {
 func TestAppSecMetaStructHook(t *testing.T) {
 	cco := newCreditCardsObfuscator(config.CreditCardsConfig{Enabled: true})
 	defer cco.Stop()
+	
 	t.Run("normal", func(t *testing.T) {
 		appsecstruct := pb.AppSecStruct{Triggers: []*pb.AppSecTrigger{{
 			Rule: &pb.AppSecRuleTrigger{Id: "ua-000-01", Name: "Arachni"},
