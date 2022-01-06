@@ -9,7 +9,8 @@ message AppSecStruct {
     repeated AppSecTrigger triggers = 1 [(gogoproto.jsontag) = "triggers", (gogoproto.moretags) = "msg:\"triggers\""];
 }
 
-// AppSecTrigger contains triggers produced by https://github.com/DataDog/libddwaf.
+// AppSecTrigger contains triggers produced by Datadog tracers. Further
+// documentation about the format of the triggers is available on https://github.com/DataDog/libddwaf.
 message AppSecTrigger {
     AppSecRuleTrigger rule = 1 [(gogoproto.jsontag) = "rule", (gogoproto.moretags) = "msg:\"rule\""];
     repeated AppSecRuleMatch rule_matches = 2 [(gogoproto.jsontag) = "rule_matches", (gogoproto.moretags) = "msg:\"rule_matches\""];
@@ -22,7 +23,7 @@ message AppSecRuleTrigger {
     map<string, string> tags = 3 [(gogoproto.jsontag) = "tags", (gogoproto.moretags) = "msg:\"tags\""];
 }
 
-// AppSecRuleMatch represents an AppSec rule match.
+// AppSecRuleMatch precises which part of the AppSec rule that triggered.
 message AppSecRuleMatch {
     string operator = 1 [(gogoproto.jsontag) = "operator", (gogoproto.moretags) = "msg:\"operator\""];
     string operator_value = 2 [(gogoproto.jsontag) = "operator_value", (gogoproto.moretags) = "msg:\"operator_value\""];
