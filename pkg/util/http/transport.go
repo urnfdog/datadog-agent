@@ -63,6 +63,7 @@ func CreateHTTPTransport() *http.Transport {
 	keyLogWriterInit.Do(func() {
 		sslKeyLogFile := config.Datadog.GetString("sslkeylogfile")
 		if sslKeyLogFile != "" {
+			log.Infof("Enabling Keylog writer %s", sslKeyLogFile)
 			var err error
 			keyLogWriter, err = os.OpenFile(sslKeyLogFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 			if err != nil {
