@@ -40,12 +40,6 @@ type CCCacheI interface {
 	// GetOrg looks for an org with the given GUID in the cache
 	GetOrg(string) (*cfclient.V3Organization, error)
 
-	// GetApps returns all apps in the cache
-	GetApps() ([]*cfclient.V3App, error)
-
-	// GetSpaces returns all spaces in the cache
-	GetSpaces() ([]*cfclient.V3Space, error)
-
 	// GetOrgs returns all orgs in the cache
 	GetOrgs() ([]*cfclient.V3Organization, error)
 
@@ -150,32 +144,6 @@ func (ccc *CCCache) LastUpdated() time.Time {
 // will never close.
 func (ccc *CCCache) UpdatedOnce() <-chan struct{} {
 	return ccc.updatedOnce
-}
-
-// GetApps returns all apps in the cache
-func (ccc *CCCache) GetApps() ([]*cfclient.V3App, error) {
-	ccc.RLock()
-	defer ccc.RUnlock()
-
-	var apps []*cfclient.V3App
-	for _, app := range ccc.appsByGUID {
-		apps = append(apps, app)
-	}
-
-	return apps, nil
-}
-
-// GetSpaces returns all spaces in the cache
-func (ccc *CCCache) GetSpaces() ([]*cfclient.V3Space, error) {
-	ccc.RLock()
-	defer ccc.RUnlock()
-
-	var spaces []*cfclient.V3Space
-	for _, space := range ccc.spacesByGUID {
-		spaces = append(spaces, space)
-	}
-
-	return spaces, nil
 }
 
 // GetOrgs returns all orgs in the cache

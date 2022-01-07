@@ -87,17 +87,6 @@ type Links struct {
 	Stats cfclient.Link `json:"stats"`
 }
 
-var cfProcess2 = cfclient.Process{
-	GUID: "process_guid_2",
-	Type: "process_type_2",
-	Links: Links {
-		App: cfclient.Link {
-			Href: "https://api.sys.integrations-lab.devenv.dog/v3/apps/random_app_guid",
-		},
-	},
-}
-
-
 var cfProcess1 = cfclient.Process{
 	GUID: "process_guid_1",
 	Type: "process_type_1",
@@ -108,6 +97,15 @@ var cfProcess1 = cfclient.Process{
 	},
 }
 
+var cfProcess2 = cfclient.Process{
+	GUID: "process_guid_2",
+	Type: "process_type_2",
+	Links: Links {
+		App: cfclient.Link {
+			Href: "https://api.sys.integrations-lab.devenv.dog/v3/apps/random_app_guid",
+		},
+	},
+}
 
 var BBSModelA1 = models.ActualLRP{
 	ActualLRPNetInfo: models.ActualLRPNetInfo{
