@@ -67,4 +67,24 @@ func TestCCCache_GetProcesses(t *testing.T) {
 	assert.EqualValues(t, 2, len(processes))
 	assert.EqualValues(t, &cfProcess1, processes[0])
 	assert.EqualValues(t, &cfProcess2, processes[1])
+	_, err := cc.GetProcesses("not-existing-guid")
+	assert.NotNil(t, err)
+}
+
+func TestCCCache_GetCFApplication(t *testing.T) {
+	cc.readData()
+	cfapp1, _ := cc.GetCFApplication("random_app_guid")
+	assert.EqualValues(t, &cfApp1, cfapp1)
+	cfapp2, _ := cc.GetCFApplication("guid2")
+	assert.EqualValues(t, &cfApp2, cfapp2)
+	_, err := cc.GetCFApplication("not-existing-guid")
+	assert.NotNil(t, err)
+}
+
+func TestCCCache_GetCFApplications(t *testing.T) {
+	cc.readData()
+	cfapps, _ := cc.GetCFApplications()
+	assert.EqualValues(t, 2, len(cfapps))
+	assert.EqualValues(t, &cfApp1, cfapps[0])
+	assert.EqualValues(t, &cfApp2, cfapps[1])
 }

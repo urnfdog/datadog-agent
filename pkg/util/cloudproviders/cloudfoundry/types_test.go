@@ -107,6 +107,46 @@ var cfProcess2 = cfclient.Process{
 	},
 }
 
+var cfApp1 = CFApplication{
+	GUID: "random_app_guid",
+	Name: "name_of_app_cc",
+	SpaceGUID: "space_guid_1",
+	SpaceName: "space_name_1",
+	OrgName: "org_name_1",
+	OrgGUID: "org_guid_1",
+	Instances: 0,
+	Buildpacks: nil,
+	DiskQuota: 0,
+	TotalDiskQuota: 0,
+	Memory: 0,
+	TotalMemory: 0,
+	Labels: map[string] string {
+		"tags.datadoghq.com/env": "test-env",
+		"toto": "tata",
+	},
+	Annotations: map[string] string {
+		"tags.datadoghq.com/service": "test-service",
+		"foo": "bar",
+	},
+}
+
+var cfApp2 = CFApplication{
+	GUID: "guid2",
+	Name: "app2",
+	SpaceGUID: "space_guid_2",
+	SpaceName: "space_name_2",
+	OrgName: "org_name_2",
+	OrgGUID: "org_guid_2",
+	Instances: 0,
+	Buildpacks: nil,
+	DiskQuota: 0,
+	TotalDiskQuota: 0,
+	Memory: 0,
+	TotalMemory: 0,
+	Labels: map[string] string {},
+	Annotations: map[string] string {},
+}
+
 var BBSModelA1 = models.ActualLRP{
 	ActualLRPNetInfo: models.ActualLRPNetInfo{
 		InstanceAddress: "1.2.3.4",

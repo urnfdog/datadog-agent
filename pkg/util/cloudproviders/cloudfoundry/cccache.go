@@ -177,7 +177,10 @@ func (ccc *CCCache) GetProcesses(appGUID string) ([]*cfclient.Process, error) {
 	ccc.RLock()
 	defer ccc.RUnlock()
 
-	return ccc.processesByAppGUID[appGUID], nil
+	if processes, ok := ccc.processesByAppGUID[appGUID]; ok {
+		return processes, nil
+	}
+	return nil, fmt.Errorf("could not find CF processes for app %v in cloud controller cache", appGUID)
 }
 
 // GetCFApplications returns all CF applications in the cache
