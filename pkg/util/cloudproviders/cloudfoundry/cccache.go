@@ -381,19 +381,20 @@ func (ccc *CCCache) readData() {
 		query.Add("per_page", fmt.Sprintf("%d", ccc.appsBatchSize))
 		processes, err := ccc.ccAPIClient.ListAllProcessesByQuery(query)
 		if err != nil {
-			log.Errorf("Failed listing orgs from cloud controller: %v", err)
+			log.Errorf("Failed listing processes from cloud controller: %v", err)
 			return
 		}
 		// Group all processes per app
 		processesByAppGUID = make(map[string][]*cfclient.Process)
 		for _, process := range processes {
-			parts := strings.Split(process.Links.App.Href, "/")
+			v3Process := process
+			parts := strings.Split(v3Process.Links.App.Href, "/")
 			appGUID := parts[len(parts)-1]
 			appProcesses, exists := processesByAppGUID[appGUID]
 			if exists {
-				appProcesses = append(appProcesses, &process)
+				appProcesses = append(appProcesses, &v3Process)
 			} else {
-				appProcesses = []*cfclient.Process{&process}
+				appProcesses = []*cfclient.Process{&v3Process}
 			}
 			processesByAppGUID[appGUID] = appProcesses
 		}

@@ -43,3 +43,28 @@ func TestCCCache_GetApp(t *testing.T) {
 	_, err := cc.GetApp("not-existing-guid")
 	assert.NotNil(t, err)
 }
+
+func TestCCCache_GetSpace(t *testing.T) {
+	space1, _ := cc.GetSpace("space_guid_1")
+	assert.EqualValues(t, v3Space1, *space1)
+	space2, _ := cc.GetSpace("space_guid_2")
+	assert.EqualValues(t, v3Space2, *space2)
+	_, err := cc.GetSpace("not-existing-guid")
+	assert.NotNil(t, err)
+}
+
+func TestCCCache_GetOrg(t *testing.T) {
+	org1, _ := cc.GetOrg("org_guid_1")
+	assert.EqualValues(t, v3Org1, *org1)
+	org2, _ := cc.GetOrg("org_guid_2")
+	assert.EqualValues(t, v3Org2, *org2)
+	_, err := cc.GetOrg("not-existing-guid")
+	assert.NotNil(t, err)
+}
+
+func TestCCCache_GetProcesses(t *testing.T) {
+	processes, _ := cc.GetProcesses("random_app_guid")
+	assert.EqualValues(t, 2, len(processes))
+	assert.EqualValues(t, &cfProcess1, processes[0])
+	assert.EqualValues(t, &cfProcess2, processes[1])
+}
