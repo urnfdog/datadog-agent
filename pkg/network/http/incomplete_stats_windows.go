@@ -16,11 +16,11 @@ import (
 
 // Windows does not have incomplete http transactions because flows in the windows driver
 // see both directions of traffic
-type incompleteBuffer struct {}
+type incompleteBuffer struct{}
 
 func newIncompleteBuffer(c *config.Config, telemetry *telemetry) *incompleteBuffer {
 	return &incompleteBuffer{}
 }
 
-func (b *incompleteBuffer) Add(tx httpTX) {}
+func (b *incompleteBuffer) Add(tx httpTX)                 {}
 func (b *incompleteBuffer) Flush(now time.Time) []*httpTX { return nil }

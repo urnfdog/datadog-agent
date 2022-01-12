@@ -122,7 +122,7 @@ func removeDuplicates(stats map[Key]RequestStats) {
 
 	for k, v := range stats {
 		if k.isLocalhost() {
-			for i:=0; i<NumStatusClasses; i++ {
+			for i := 0; i < NumStatusClasses; i++ {
 				v[i].Count = v[i].Count / 2
 				stats[k] = v
 			}

@@ -179,7 +179,7 @@ func iocpIsClosedError(err error) bool {
 func (di *httpDriverInterface) flushPendingTransactions() ([]driver.HttpTransactionType, error) {
 	var (
 		bytesRead uint32
-		buf       = make([]byte, driver.HttpTransactionTypeSize * driver.HttpBatchSize)
+		buf       = make([]byte, driver.HttpTransactionTypeSize*driver.HttpBatchSize)
 	)
 
 	err := windows.DeviceIoControl(di.driverHTTPHandle.Handle,
