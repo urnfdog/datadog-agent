@@ -14,6 +14,7 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/network/config"
 	"github.com/DataDog/datadog-agent/pkg/network/driver"
 	"github.com/DataDog/datadog-agent/pkg/util/log"
+	"github.com/DataDog/datadog-agent/pkg/process/util"
 )
 
 const (
@@ -127,13 +128,24 @@ func removeDuplicates(stats map[Key]RequestStats) {
 	// To fix this, we'll find all localhost keys and half their transaction counts.
 
 	for k, v := range stats {
-		if k.isLocalhost() {
+		if isLocalhost(k) {
 			for i := 0; i < NumStatusClasses; i++ {
 				v[i].Count = v[i].Count / 2
 				stats[k] = v
 			}
 		}
 	}
+}
+
+func isLocalhost(k Key) bool {
+	var sAddr util.Address
+	if k.SrcIPHigh == 0 {
+		sAddr = util.V4Address(uint32(k.SrcIPLow))
+	} else {
+		sAddr = util.V6Address(k.SrcIPLow, k.SrcIPHigh)
+	}
+
+	return sAddr.IsLoopback()
 }
 
 // GetStats gets driver stats related to the HTTP handle
