@@ -17,7 +17,6 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/DataDog/datadog-agent/pkg/config"
-	"github.com/DataDog/datadog-agent/pkg/process/util"
 	apicfg "github.com/DataDog/datadog-agent/pkg/process/util/api/config"
 	httputils "github.com/DataDog/datadog-agent/pkg/util/http"
 	"github.com/DataDog/datadog-agent/pkg/util/log"
@@ -268,18 +267,6 @@ func (a *AgentConfig) LoadProcessYamlConfig(path string) error {
 			BlockProfileRate:     config.Datadog.GetInt("internal_profiling.block_profile_rate"),
 			WithGoroutineProfile: config.Datadog.GetBool("internal_profiling.enable_goroutine_stacktraces"),
 			Tags:                 []string{fmt.Sprintf("version:%v", v)},
-		}
-	}
-
-	// Used to override container source auto-detection
-	// and to enable multiple collector sources if needed.
-	// "docker", "ecs_fargate", "kubelet", "kubelet docker", etc.
-	containerSourceKey := key(ns, "container_source")
-	if config.Datadog.Get(containerSourceKey) != nil {
-		// container_source can be nil since we're not forcing default values in the main config file
-		// make sure we don't pass nil value to GetStringSlice to avoid spammy warnings
-		if sources := config.Datadog.GetStringSlice(containerSourceKey); len(sources) > 0 {
-			util.SetContainerSources(sources)
 		}
 	}
 

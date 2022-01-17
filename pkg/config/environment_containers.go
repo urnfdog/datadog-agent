@@ -62,6 +62,17 @@ func init() {
 	registerFeature(Podman)
 }
 
+func IsContainerFeaturePresent() bool {
+	return IsFeaturePresent(Docker) ||
+		IsFeaturePresent(Containerd) ||
+		IsFeaturePresent(Cri) ||
+		IsFeaturePresent(Kubernetes) ||
+		IsFeaturePresent(ECSFargate) ||
+		IsFeaturePresent(EKSFargate) ||
+		IsFeaturePresent(CloudFoundry) ||
+		IsFeaturePresent(Podman)
+}
+
 func detectContainerFeatures(features FeatureMap) {
 	detectKubernetes(features)
 	detectDocker(features)

@@ -298,11 +298,7 @@ func NewAgentConfig(loggerName config.LoggerName, yamlPath, netYamlPath string) 
 		return nil, err
 	}
 
-	// Note: This only considers container sources that are already setup. It's possible that container sources may
-	//       need a few minutes to be ready on newly provisioned hosts.
-	_, err = util.GetContainers()
-	canAccessContainers := err == nil
-
+	canAccessContainers := config.IsContainerFeaturePresent()
 	cfg := NewDefaultAgentConfig(canAccessContainers)
 
 	if err := cfg.LoadProcessYamlConfig(yamlPath); err != nil {
@@ -392,7 +388,7 @@ func NewAgentConfig(loggerName config.LoggerName, yamlPath, netYamlPath string) 
 // initRuntimeSettings registers settings to be added to the runtime config.
 func initRuntimeSettings() {
 	// NOTE: Any settings you want to register should simply be added here
-	var processRuntimeSettings = []settings.RuntimeSetting{
+	processRuntimeSettings := []settings.RuntimeSetting{
 		settings.LogLevelRuntimeSetting{},
 	}
 

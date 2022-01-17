@@ -3,6 +3,7 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
 // Copyright 2016-present Datadog, Inc.
 
+//go:build containerd
 // +build containerd
 
 package containerd
@@ -105,7 +106,9 @@ func TestBuildWorkloadMetaContainer(t *testing.T) {
 		Runtime: workloadmeta.ContainerRuntimeContainerd,
 		State: workloadmeta.ContainerState{
 			Running:    true,
+			Status:     workloadmeta.ContainerStatusRunning,
 			StartedAt:  createdAt,
+			CreatedAt:  createdAt,
 			FinishedAt: time.Time{}, // Not available
 		},
 		NetworkIPs: make(map[string]string), // Not available
