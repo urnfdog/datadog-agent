@@ -229,7 +229,7 @@ require (
 	k8s.io/client-go v0.21.5
 	k8s.io/cri-api v0.21.5
 	k8s.io/klog v1.0.1-0.20200310124935-4ad0115ba9e4 // Min version that includes fix for Windows Nano
-	k8s.io/klog/v2 v2.9.0
+	k8s.io/klog/v2 v2.40.1
 	k8s.io/kube-openapi v0.0.0-20210305001622-591a79e4bda7
 	k8s.io/kube-state-metrics/v2 v2.1.1
 	k8s.io/metrics v0.21.5
