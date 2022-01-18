@@ -101,12 +101,14 @@ func BPFLoad() error {
 		return err
 	}
 
-	if err = m.Init(bytes.NewReader(rawProbe)); err != nil {
+	if err := m.Init(bytes.NewReader(rawProbe)); err != nil {
 		return fmt.Errorf("failed to initialize manager: %w", err)
 	}
 
-	if err = BPFClone(m); err != nil {
-		return err
+	if bpfClone {
+		if err := BPFClone(m); err != nil {
+			return err
+		}
 	}
 
 	return nil
