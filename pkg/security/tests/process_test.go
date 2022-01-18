@@ -256,10 +256,7 @@ func TestProcessContext(t *testing.T) {
 
 		test.WaitSignal(t, func() error {
 			cmd := exec.Command(lsExecutable, "-ll")
-			if err = cmd.Run(); err != nil {
-				return err
-			}
-			return nil
+			return cmd.Run()
 		}, func(event *sprobe.Event, rule *rules.Rule) {
 			assertTriggeredRule(t, rule, "test_rule_argv")
 		})
@@ -270,10 +267,7 @@ func TestProcessContext(t *testing.T) {
 
 		test.WaitSignal(t, func() error {
 			cmd := exec.Command(lsExecutable, "-ls", "--escape")
-			if err = cmd.Run(); err != nil {
-				return err
-			}
-			return nil
+			return cmd.Run()
 		}, func(event *sprobe.Event, rule *rules.Rule) {
 			assertTriggeredRule(t, rule, "test_rule_args_flags")
 		})

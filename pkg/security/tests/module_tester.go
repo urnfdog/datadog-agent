@@ -277,12 +277,7 @@ func copyFile(src string, dst string, mode fs.FileMode) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(dst, input, mode)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return os.WriteFile(dst, input, mode)
 }
 
 //nolint:deadcode,unused
