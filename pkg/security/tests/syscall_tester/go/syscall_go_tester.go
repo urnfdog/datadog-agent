@@ -51,7 +51,7 @@ var ebpfProbe = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xec\x55\x4f\x6b
 func bindataRead(data []byte) ([]byte, error) {
 	gz, err := gzip.NewReader(bytes.NewBuffer(data))
 	if err != nil {
-		return nil, fmt.Errorf("failed to read ebpfProbe: %v", err)
+		return nil, fmt.Errorf("failed to read ebpfProbe: %w", err)
 	}
 
 	var buf bytes.Buffer
@@ -59,7 +59,7 @@ func bindataRead(data []byte) ([]byte, error) {
 	clErr := gz.Close()
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to read ebpfProbe: %v", err)
+		return nil, fmt.Errorf("failed to read ebpfProbe: %w", err)
 	}
 	if clErr != nil {
 		return nil, err
@@ -70,7 +70,7 @@ func bindataRead(data []byte) ([]byte, error) {
 
 func BPFClone(m *manager.Manager) error {
 	if _, err := m.CloneMap("cache", "cache_clone", manager.MapOptions{}); err != nil {
-		return fmt.Errorf("couldn't clone 'cache' map: %v", err)
+		return fmt.Errorf("couldn't clone 'cache' map: %w", err)
 	}
 	return nil
 }
@@ -102,7 +102,7 @@ func BPFLoad() error {
 	}
 
 	if err = m.Init(bytes.NewReader(rawProbe)); err != nil {
-		return fmt.Errorf("failed to initialize manager: %v", err)
+		return fmt.Errorf("failed to initialize manager: %w", err)
 	}
 
 	if err = BPFClone(m); err != nil {
