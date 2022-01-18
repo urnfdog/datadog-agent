@@ -11,7 +11,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path"
 	"sync"
@@ -909,7 +908,7 @@ func (p *ProcessResolver) dumpEntry(writer io.Writer, entry *model.ProcessCacheE
 
 // Dump create a temp file and dump the cache
 func (p *ProcessResolver) Dump() (string, error) {
-	dump, err := ioutil.TempFile("/tmp", "process-cache-dump-")
+	dump, err := os.CreateTemp("/tmp", "process-cache-dump-")
 	if err != nil {
 		return "", err
 	}
