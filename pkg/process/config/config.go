@@ -95,19 +95,18 @@ type WindowsConfig struct {
 //
 // Deprecated. Use `pkg/config` directly.
 type AgentConfig struct {
-	Enabled                   bool
-	HostName                  string
-	APIEndpoints              []apicfg.Endpoint
-	QueueSize                 int // The number of items allowed in each delivery queue.
-	RTQueueSize               int // the number of items allowed in real-time delivery queue
-	ProcessQueueBytes         int // The total number of bytes that can be enqueued for delivery to the process intake endpoint
-	Blacklist                 []*regexp.Regexp
-	Scrubber                  *DataScrubber
-	MaxPerMessage             int
-	MaxCtrProcessesPerMessage int // The maximum number of processes that belong to a container for a given message
-	MaxConnsPerMessage        int
-	Transport                 *http.Transport `json:"-"`
-	ProcessExpVarPort         int
+	Enabled            bool
+	HostName           string
+	APIEndpoints       []apicfg.Endpoint
+	QueueSize          int // The number of items allowed in each delivery queue.
+	RTQueueSize        int // the number of items allowed in real-time delivery queue
+	ProcessQueueBytes  int // The total number of bytes that can be enqueued for delivery to the process intake endpoint
+	Blacklist          []*regexp.Regexp
+	Scrubber           *DataScrubber
+	MaxPerMessage      int
+	MaxConnsPerMessage int
+	Transport          *http.Transport `json:"-"`
+	ProcessExpVarPort  int
 
 	// profiling settings, or nil if profiling is not enabled
 	ProfilingSettings *profiling.Settings
@@ -149,10 +148,8 @@ func (a AgentConfig) CheckInterval(checkName string) time.Duration {
 }
 
 const (
-	defaultProcessEndpoint         = "https://process.datadoghq.com"
-	maxMessageBatch                = 100
-	defaultMaxCtrProcsMessageBatch = 10000
-	maxCtrProcsMessageBatch        = 30000
+	defaultProcessEndpoint = "https://process.datadoghq.com"
+	maxMessageBatch        = 100
 )
 
 // NewDefaultTransport provides a http transport configuration with sane default timeouts
@@ -194,13 +191,12 @@ func NewDefaultAgentConfig(canAccessContainers bool) *AgentConfig {
 		QueueSize:   256,
 		RTQueueSize: 5, // We set a small queue size for real-time message queue because they get staled very quickly, thus we only keep the latest several payloads
 
-		MaxPerMessage:             maxMessageBatch,
-		MaxCtrProcessesPerMessage: defaultMaxCtrProcsMessageBatch,
-		MaxConnsPerMessage:        600,
-		HostName:                  "",
-		Transport:                 NewDefaultTransport(),
-		ProcessExpVarPort:         6062,
-		ContainerHostType:         model.ContainerHostType_notSpecified,
+		MaxPerMessage:      maxMessageBatch,
+		MaxConnsPerMessage: 600,
+		HostName:           "",
+		Transport:          NewDefaultTransport(),
+		ProcessExpVarPort:  6062,
+		ContainerHostType:  model.ContainerHostType_notSpecified,
 
 		// System probe collection configuration
 		EnableSystemProbe:  false,
@@ -386,7 +382,6 @@ func loadEnvVariables() {
 		{"DD_PROCESS_AGENT_URL", "process_config.process_dd_url"},
 		{"DD_PROCESS_AGENT_INTERNAL_PROFILING_ENABLED", "process_config.internal_profiling.enabled"},
 		{"DD_PROCESS_AGENT_MAX_PER_MESSAGE", "process_config.max_per_message"},
-		{"DD_PROCESS_AGENT_MAX_CTR_PROCS_PER_MESSAGE", "process_config.max_ctr_procs_per_message"},
 		{"DD_PROCESS_AGENT_CMD_PORT", "process_config.cmd_port"},
 		{"DD_PROCESS_AGENT_WINDOWS_USE_PERF_COUNTERS", "process_config.windows.use_perf_counters"},
 		{"DD_ORCHESTRATOR_URL", "orchestrator_explorer.orchestrator_dd_url"},

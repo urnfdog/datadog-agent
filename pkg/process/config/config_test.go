@@ -151,11 +151,6 @@ func TestOnlyEnvConfig(t *testing.T) {
 	os.Setenv("DD_PROCESS_AGENT_MAX_PER_MESSAGE", "99")
 	agentConfig, _ = NewAgentConfig("test", "", syscfg, true)
 	assert.Equal(t, 99, agentConfig.MaxPerMessage)
-
-	_ = os.Setenv("DD_PROCESS_AGENT_MAX_CTR_PROCS_PER_MESSAGE", "1234")
-	agentConfig, _ = NewAgentConfig("test", "", syscfg, true)
-	assert.Equal(t, 1234, agentConfig.MaxCtrProcessesPerMessage)
-	_ = os.Unsetenv("DD_PROCESS_AGENT_MAX_CTR_PROCS_PER_MESSAGE")
 }
 
 // TestEnvGrpcConnectionTimeoutSecs tests DD_PROCESS_CONFIG_GRPC_CONNECTION_TIMEOUT_SECS.

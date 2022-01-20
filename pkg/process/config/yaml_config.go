@@ -177,17 +177,6 @@ func (a *AgentConfig) LoadProcessYamlConfig(path string) error {
 		}
 	}
 
-	// The maximum number of processes belonging to a container per message. Note: Only change if the defaults are causing issues.
-	if k := key(ns, "max_ctr_procs_per_message"); config.Datadog.IsSet(k) {
-		if maxCtrProcessesPerMessage := config.Datadog.GetInt(k); maxCtrProcessesPerMessage <= 0 {
-			log.Warnf("Invalid max container processes count per message (<= 0), using default value of %d", defaultMaxCtrProcsMessageBatch)
-		} else if maxCtrProcessesPerMessage <= maxCtrProcsMessageBatch {
-			a.MaxCtrProcessesPerMessage = maxCtrProcessesPerMessage
-		} else {
-			log.Warnf("Overriding the configured max container processes count per message limit because it exceeds maximum limit of %d", maxCtrProcsMessageBatch)
-		}
-	}
-
 	// Windows: Sets windows process table refresh rate (in number of check runs)
 	if argRefresh := config.Datadog.GetInt(key(ns, "windows", "args_refresh_interval")); argRefresh != 0 {
 		a.Windows.ArgsRefreshInterval = argRefresh
