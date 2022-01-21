@@ -42,7 +42,7 @@ func TestOrphanEntries(t *testing.T) {
 		require.Len(t, complete, 1)
 
 		completeTX := complete[0]
-		assert.Equal(t, "/foo/bar", string(completeTX.Path(make([]byte, 256))))
+		assert.Equal(t, "/foo/bar", string(getPath(completeTX.ReqFragment(), make([]byte, 256))))
 		assert.Equal(t, 200, completeTX.StatusClass())
 	})
 
@@ -62,4 +62,12 @@ func TestOrphanEntries(t *testing.T) {
 		_ = buffer.Flush(now)
 		assert.True(t, len(buffer.data) == 0)
 	})
+}
+
+func requestFragment(fragment []byte) [HTTPBufferSize]_Ctype_char {
+	var b [HTTPBufferSize]_Ctype_char
+	for i := 0; i < len(b) && i < len(fragment); i++ {
+		b[i] = _Ctype_char(fragment[i])
+	}
+	return b
 }
