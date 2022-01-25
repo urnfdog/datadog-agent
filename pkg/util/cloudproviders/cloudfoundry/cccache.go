@@ -198,12 +198,20 @@ func (ccc *CCCache) GetCFApplications() ([]*CFApplication, error) {
 
 // GetCFApplication looks for a CF application with the given GUID in the cache
 func (ccc *CCCache) GetCFApplication(guid string) (*CFApplication, error) {
-	ccc.RLock()
-	defer ccc.RUnlock()
+	var cfapp *CFApplication
+	var ok bool
 
-	cfapp, ok := ccc.cfApplicationsByGUID[guid]
+	ccc.RLock()
+	cfapp, ok = ccc.cfApplicationsByGUID[guid]
+	ccc.RUnlock()
 	if !ok {
-		return nil, fmt.Errorf("could not find CF application %s in cloud controller cache", guid)
+		ccc.readData()
+		ccc.RLock()
+		cfapp, ok = ccc.cfApplicationsByGUID[guid]
+		ccc.RUnlock()
+		if !ok {
+			return nil, fmt.Errorf("could not find CF application %s in cloud controller cache", guid)
+		}
 	}
 	return cfapp, nil
 }
