@@ -90,8 +90,8 @@ type Links struct {
 var cfProcess1 = cfclient.Process{
 	GUID: "process_guid_1",
 	Type: "process_type_1",
-	Links: Links {
-		App: cfclient.Link {
+	Links: Links{
+		App: cfclient.Link{
 			Href: "https://api.sys.integrations-lab.devenv.dog/v3/apps/random_app_guid",
 		},
 	},
@@ -100,51 +100,51 @@ var cfProcess1 = cfclient.Process{
 var cfProcess2 = cfclient.Process{
 	GUID: "process_guid_2",
 	Type: "process_type_2",
-	Links: Links {
-		App: cfclient.Link {
+	Links: Links{
+		App: cfclient.Link{
 			Href: "https://api.sys.integrations-lab.devenv.dog/v3/apps/random_app_guid",
 		},
 	},
 }
 
 var cfApp1 = CFApplication{
-	GUID: "random_app_guid",
-	Name: "name_of_app_cc",
-	SpaceGUID: "space_guid_1",
-	SpaceName: "space_name_1",
-	OrgName: "org_name_1",
-	OrgGUID: "org_guid_1",
-	Instances: 0,
-	Buildpacks: nil,
-	DiskQuota: 0,
+	GUID:           "random_app_guid",
+	Name:           "name_of_app_cc",
+	SpaceGUID:      "space_guid_1",
+	SpaceName:      "space_name_1",
+	OrgName:        "org_name_1",
+	OrgGUID:        "org_guid_1",
+	Instances:      0,
+	Buildpacks:     nil,
+	DiskQuota:      0,
 	TotalDiskQuota: 0,
-	Memory: 0,
-	TotalMemory: 0,
-	Labels: map[string] string {
+	Memory:         0,
+	TotalMemory:    0,
+	Labels: map[string]string{
 		"tags.datadoghq.com/env": "test-env",
-		"toto": "tata",
+		"toto":                   "tata",
 	},
-	Annotations: map[string] string {
+	Annotations: map[string]string{
 		"tags.datadoghq.com/service": "test-service",
-		"foo": "bar",
+		"foo":                        "bar",
 	},
 }
 
 var cfApp2 = CFApplication{
-	GUID: "guid2",
-	Name: "app2",
-	SpaceGUID: "space_guid_2",
-	SpaceName: "space_name_2",
-	OrgName: "org_name_2",
-	OrgGUID: "org_guid_2",
-	Instances: 0,
-	Buildpacks: nil,
-	DiskQuota: 0,
+	GUID:           "guid2",
+	Name:           "app2",
+	SpaceGUID:      "space_guid_2",
+	SpaceName:      "space_name_2",
+	OrgName:        "org_name_2",
+	OrgGUID:        "org_guid_2",
+	Instances:      0,
+	Buildpacks:     nil,
+	DiskQuota:      0,
 	TotalDiskQuota: 0,
-	Memory: 0,
-	TotalMemory: 0,
-	Labels: map[string] string {},
-	Annotations: map[string] string {},
+	Memory:         0,
+	TotalMemory:    0,
+	Labels:         map[string]string{},
+	Annotations:    map[string]string{},
 }
 
 var BBSModelA1 = models.ActualLRP{
