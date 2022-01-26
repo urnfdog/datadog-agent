@@ -3,6 +3,7 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
 // Copyright 2016-present Datadog, Inc.
 
+//go:build kubelet && orchestrator
 // +build kubelet,orchestrator
 
 package checks
@@ -44,7 +45,7 @@ func (c *PodCheck) Name() string { return config.PodCheckName }
 func (c *PodCheck) RealTime() bool { return false }
 
 // Run runs the PodCheck to collect a list of running pods
-func (c *PodCheck) Run(cfg *config.AgentConfig, groupID int32) ([]model.MessageBody, error) {
+func (c *PodCheck) Run(cfg *config.AgentConfig, groupID int32) ([]model.MessageBody, []*model.Manifest, error) {
 	kubeUtil, err := kubelet.GetKubeUtil()
 	if err != nil {
 		return nil, err
