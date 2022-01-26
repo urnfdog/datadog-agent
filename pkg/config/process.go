@@ -18,6 +18,10 @@ const (
 	// This can be fairly high as the input should get throttled by queue bytes first.
 	// Assuming we generate ~8 checks/minute (for process/network), this should allow buffering of ~30 minutes of data assuming it fits within the queue bytes memory budget
 	DefaultCheckQueueSize = 256
+
+	// DefaultRTCheckQueueSize is the max amount of realtime checks that can be buffered in memory
+	// We set a small queue size for real-time message because they get staled very quickly, thus we only keep the latest several payloads
+	DefaultRTCheckQueueSize = 5
 )
 
 // procBindEnvAndSetDefault is a helper function that generates both "DD_PROCESS_CONFIG_" and "DD_PROCESS_AGENT_" prefixes from a key.
@@ -41,7 +45,7 @@ func setupProcesses(config Config) {
 	config.SetKnown("process_config.enabled")
 	config.SetKnown("process_config.intervals.process_realtime")
 	procBindEnvAndSetDefault(config, "process_config.queue_size", DefaultCheckQueueSize)
-	config.SetKnown("process_config.rt_queue_size")
+	procBindEnvAndSetDefault(config, "process_config.rt_queue_size", DefaultRTCheckQueueSize)
 	config.SetKnown("process_config.max_per_message")
 	config.SetKnown("process_config.max_ctr_procs_per_message")
 	config.SetKnown("process_config.cmd_port")
