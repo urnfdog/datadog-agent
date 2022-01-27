@@ -155,7 +155,7 @@ func NewArgsEnvsCacheEntry(onRelease func(_ *ArgsEnvsCacheEntry)) *ArgsEnvsCache
 	return entry
 }
 
-func (p *ArgsEnvsCacheEntry) toArray(scrub func([]string) []string) ([]string, bool) {
+func (p *ArgsEnvsCacheEntry) toArray() ([]string, bool) {
 	entry := p
 
 	var values []string
@@ -176,10 +176,6 @@ func (p *ArgsEnvsCacheEntry) toArray(scrub func([]string) []string) ([]string, b
 		entry = entry.next
 	}
 
-	if scrub != nil {
-		values = scrub(values)
-	}
-
 	return values, truncated
 }
 
@@ -194,11 +190,11 @@ type ArgsEntry struct {
 }
 
 // ToArray returns args as array
-func (p *ArgsEntry) ToArray(scrub func([]string) []string) ([]string, bool) {
+func (p *ArgsEntry) ToArray() ([]string, bool) {
 	if len(p.Values) > 0 || p.parsed {
 		return p.Values, p.Truncated
 	}
-	p.Values, p.Truncated = p.toArray(scrub)
+	p.Values, p.Truncated = p.toArray()
 	p.parsed = true
 
 	// now we have the cache we can free
@@ -228,7 +224,7 @@ func (p *EnvsEntry) ToMap() (map[string]string, bool) {
 		return p.Values, p.Truncated
 	}
 
-	values, truncated := p.toArray(nil)
+	values, truncated := p.toArray()
 
 	envs := make(map[string]string, len(values))
 

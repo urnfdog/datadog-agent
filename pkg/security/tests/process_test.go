@@ -3,6 +3,7 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
 // Copyright 2016-present Datadog, Inc.
 
+//go:build functionaltests
 // +build functionaltests
 
 package tests
@@ -196,6 +197,12 @@ func TestProcessContext(t *testing.T) {
 			_ = cmd.Run()
 			return nil
 		}, func(event *sprobe.Event, rule *rules.Rule) {
+			arg0, err := event.GetFieldValue("exec.arg0")
+			if err != nil {
+				t.Errorf("not able to get arg0")
+			}
+			assert.Equal(t, "ls", arg0, "incorrect arg0: %s", arg0)
+
 			// args
 			args, err := event.GetFieldValue("exec.args")
 			if err != nil || len(args.(string)) == 0 {
@@ -315,6 +322,12 @@ func TestProcessContext(t *testing.T) {
 			argv := strings.Split(args.(string), " ")
 			assert.Equal(t, 2, len(argv), "incorrect number of args: %s", argv)
 			assert.Equal(t, true, strings.HasSuffix(argv[1], "..."), "args not truncated")
+
+			arg0, err := event.GetFieldValue("exec.arg0")
+			if err != nil {
+				t.Errorf("not able to get arg0")
+			}
+			assert.Equal(t, "ls", arg0, "incorrect arg0: %s", arg0)
 		})
 
 		// number of args overflow

@@ -18,6 +18,11 @@
           "definition": "Tags of the container"
         },
         {
+          "name": "process.ancestors.arg0",
+          "type": "string",
+          "definition": ""
+        },
+        {
           "name": "process.ancestors.args",
           "type": "string",
           "definition": "Arguments of the process (as a string)"
@@ -231,6 +236,11 @@
           "name": "process.ancestors.user",
           "type": "string",
           "definition": "User of the process"
+        },
+        {
+          "name": "process.arg0",
+          "type": "string",
+          "definition": ""
         },
         {
           "name": "process.args",
@@ -707,6 +717,11 @@
       "from_agent_version": "7.27",
       "experimental": false,
       "properties": [
+        {
+          "name": "exec.arg0",
+          "type": "string",
+          "definition": ""
+        },
         {
           "name": "exec.args",
           "type": "string",
@@ -1402,6 +1417,11 @@
           "definition": "Return value of the syscall"
         },
         {
+          "name": "ptrace.tracee.ancestors.arg0",
+          "type": "string",
+          "definition": ""
+        },
+        {
           "name": "ptrace.tracee.ancestors.args",
           "type": "string",
           "definition": "Arguments of the process (as a string)"
@@ -1615,6 +1635,11 @@
           "name": "ptrace.tracee.ancestors.user",
           "type": "string",
           "definition": "User of the process"
+        },
+        {
+          "name": "ptrace.tracee.arg0",
+          "type": "string",
+          "definition": ""
         },
         {
           "name": "ptrace.tracee.args",

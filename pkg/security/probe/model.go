@@ -243,6 +243,12 @@ func (ev *Event) ResolveProcessCreatedAt(e *model.Process) uint64 {
 	return uint64(e.ExecTime.UnixNano())
 }
 
+// ResolveProcessArg0 resolves the first arg of the event
+func (ev *Event) ResolveProcessArg0(process *model.Process) string {
+	arg0, _ := ev.resolvers.ProcessResolver.GetProcessArg0(process)
+	return arg0
+}
+
 // ResolveProcessArgs resolves the args of the event
 func (ev *Event) ResolveProcessArgs(process *model.Process) string {
 	return strings.Join(ev.ResolveProcessArgv(process), " ")

@@ -527,6 +527,16 @@ func (m *Model) GetEvaluator(field eval.Field, regID eval.RegisterID) (eval.Eval
 			Weight: 9999 * eval.HandlerWeight,
 		}, nil
 
+	case "exec.arg0":
+		return &eval.StringEvaluator{
+			EvalFnc: func(ctx *eval.Context) string {
+
+				return (*Event)(ctx.Object).Exec.Process.Arg0
+			},
+			Field:  field,
+			Weight: 100 * eval.HandlerWeight,
+		}, nil
+
 	case "exec.args":
 		return &eval.StringEvaluator{
 			EvalFnc: func(ctx *eval.Context) string {
@@ -1791,6 +1801,31 @@ func (m *Model) GetEvaluator(field eval.Field, regID eval.RegisterID) (eval.Eval
 			Weight: eval.FunctionWeight,
 		}, nil
 
+	case "process.ancestors.arg0":
+		return &eval.StringArrayEvaluator{
+			EvalFnc: func(ctx *eval.Context) []string {
+				var results []string
+
+				iterator := &ProcessAncestorsIterator{}
+
+				value := iterator.Front(ctx)
+				for value != nil {
+					var result string
+
+					element := (*ProcessCacheEntry)(value)
+
+					result = element.ProcessContext.Process.Arg0
+
+					results = append(results, result)
+
+					value = iterator.Next()
+				}
+
+				return results
+			}, Field: field,
+			Weight: 100 * eval.IteratorWeight,
+		}, nil
+
 	case "process.ancestors.args":
 		return &eval.StringArrayEvaluator{
 			EvalFnc: func(ctx *eval.Context) []string {
@@ -2870,6 +2905,16 @@ func (m *Model) GetEvaluator(field eval.Field, regID eval.RegisterID) (eval.Eval
 			Weight: eval.IteratorWeight,
 		}, nil
 
+	case "process.arg0":
+		return &eval.StringEvaluator{
+			EvalFnc: func(ctx *eval.Context) string {
+
+				return (*Event)(ctx.Object).ProcessContext.Process.Arg0
+			},
+			Field:  field,
+			Weight: 100 * eval.HandlerWeight,
+		}, nil
+
 	case "process.args":
 		return &eval.StringEvaluator{
 			EvalFnc: func(ctx *eval.Context) string {
@@ -3322,6 +3367,31 @@ func (m *Model) GetEvaluator(field eval.Field, regID eval.RegisterID) (eval.Eval
 			},
 			Field:  field,
 			Weight: eval.FunctionWeight,
+		}, nil
+
+	case "ptrace.tracee.ancestors.arg0":
+		return &eval.StringArrayEvaluator{
+			EvalFnc: func(ctx *eval.Context) []string {
+				var results []string
+
+				iterator := &ProcessAncestorsIterator{}
+
+				value := iterator.Front(ctx)
+				for value != nil {
+					var result string
+
+					element := (*ProcessCacheEntry)(value)
+
+					result = element.ProcessContext.Process.Arg0
+
+					results = append(results, result)
+
+					value = iterator.Next()
+				}
+
+				return results
+			}, Field: field,
+			Weight: 100 * eval.IteratorWeight,
 		}, nil
 
 	case "ptrace.tracee.ancestors.args":
@@ -4401,6 +4471,16 @@ func (m *Model) GetEvaluator(field eval.Field, regID eval.RegisterID) (eval.Eval
 				return results
 			}, Field: field,
 			Weight: eval.IteratorWeight,
+		}, nil
+
+	case "ptrace.tracee.arg0":
+		return &eval.StringEvaluator{
+			EvalFnc: func(ctx *eval.Context) string {
+
+				return (*Event)(ctx.Object).PTrace.Tracee.Process.Arg0
+			},
+			Field:  field,
+			Weight: 100 * eval.HandlerWeight,
 		}, nil
 
 	case "ptrace.tracee.args":
@@ -6175,6 +6255,8 @@ func (e *Event) GetFields() []eval.Field {
 
 		"container.tags",
 
+		"exec.arg0",
+
 		"exec.args",
 
 		"exec.args_flags",
@@ -6427,6 +6509,8 @@ func (e *Event) GetFields() []eval.Field {
 
 		"open.retval",
 
+		"process.ancestors.arg0",
+
 		"process.ancestors.args",
 
 		"process.ancestors.args_flags",
@@ -6512,6 +6596,8 @@ func (e *Event) GetFields() []eval.Field {
 		"process.ancestors.uid",
 
 		"process.ancestors.user",
+
+		"process.arg0",
 
 		"process.args",
 
@@ -6603,6 +6689,8 @@ func (e *Event) GetFields() []eval.Field {
 
 		"ptrace.retval",
 
+		"ptrace.tracee.ancestors.arg0",
+
 		"ptrace.tracee.ancestors.args",
 
 		"ptrace.tracee.ancestors.args_flags",
@@ -6688,6 +6776,8 @@ func (e *Event) GetFields() []eval.Field {
 		"ptrace.tracee.ancestors.uid",
 
 		"ptrace.tracee.ancestors.user",
+
+		"ptrace.tracee.arg0",
 
 		"ptrace.tracee.args",
 
@@ -7208,6 +7298,10 @@ func (e *Event) GetFieldValue(field eval.Field) (interface{}, error) {
 
 		return e.ContainerContext.Tags, nil
 
+	case "exec.arg0":
+
+		return e.Exec.Process.Arg0, nil
+
 	case "exec.args":
 
 		return e.Exec.Process.Args, nil
@@ -7711,6 +7805,28 @@ func (e *Event) GetFieldValue(field eval.Field) (interface{}, error) {
 	case "open.retval":
 
 		return int(e.Open.SyscallEvent.Retval), nil
+
+	case "process.ancestors.arg0":
+
+		var values []string
+
+		ctx := eval.NewContext(unsafe.Pointer(e))
+
+		iterator := &ProcessAncestorsIterator{}
+		ptr := iterator.Front(ctx)
+
+		for ptr != nil {
+
+			element := (*ProcessCacheEntry)(ptr)
+
+			result := element.ProcessContext.Process.Arg0
+
+			values = append(values, result)
+
+			ptr = iterator.Next()
+		}
+
+		return values, nil
 
 	case "process.ancestors.args":
 
@@ -8658,6 +8774,10 @@ func (e *Event) GetFieldValue(field eval.Field) (interface{}, error) {
 
 		return values, nil
 
+	case "process.arg0":
+
+		return e.ProcessContext.Process.Arg0, nil
+
 	case "process.args":
 
 		return e.ProcessContext.Process.Args, nil
@@ -8837,6 +8957,28 @@ func (e *Event) GetFieldValue(field eval.Field) (interface{}, error) {
 	case "ptrace.retval":
 
 		return int(e.PTrace.SyscallEvent.Retval), nil
+
+	case "ptrace.tracee.ancestors.arg0":
+
+		var values []string
+
+		ctx := eval.NewContext(unsafe.Pointer(e))
+
+		iterator := &ProcessAncestorsIterator{}
+		ptr := iterator.Front(ctx)
+
+		for ptr != nil {
+
+			element := (*ProcessCacheEntry)(ptr)
+
+			result := element.ProcessContext.Process.Arg0
+
+			values = append(values, result)
+
+			ptr = iterator.Next()
+		}
+
+		return values, nil
 
 	case "ptrace.tracee.ancestors.args":
 
@@ -9783,6 +9925,10 @@ func (e *Event) GetFieldValue(field eval.Field) (interface{}, error) {
 		}
 
 		return values, nil
+
+	case "ptrace.tracee.arg0":
+
+		return e.PTrace.Tracee.Process.Arg0, nil
 
 	case "ptrace.tracee.args":
 
@@ -10595,6 +10741,9 @@ func (e *Event) GetFieldEventType(field eval.Field) (eval.EventType, error) {
 	case "container.tags":
 		return "*", nil
 
+	case "exec.arg0":
+		return "exec", nil
+
 	case "exec.args":
 		return "exec", nil
 
@@ -10973,6 +11122,9 @@ func (e *Event) GetFieldEventType(field eval.Field) (eval.EventType, error) {
 	case "open.retval":
 		return "open", nil
 
+	case "process.ancestors.arg0":
+		return "*", nil
+
 	case "process.ancestors.args":
 		return "*", nil
 
@@ -11100,6 +11252,9 @@ func (e *Event) GetFieldEventType(field eval.Field) (eval.EventType, error) {
 		return "*", nil
 
 	case "process.ancestors.user":
+		return "*", nil
+
+	case "process.arg0":
 		return "*", nil
 
 	case "process.args":
@@ -11237,6 +11392,9 @@ func (e *Event) GetFieldEventType(field eval.Field) (eval.EventType, error) {
 	case "ptrace.retval":
 		return "ptrace", nil
 
+	case "ptrace.tracee.ancestors.arg0":
+		return "ptrace", nil
+
 	case "ptrace.tracee.ancestors.args":
 		return "ptrace", nil
 
@@ -11364,6 +11522,9 @@ func (e *Event) GetFieldEventType(field eval.Field) (eval.EventType, error) {
 		return "ptrace", nil
 
 	case "ptrace.tracee.ancestors.user":
+		return "ptrace", nil
+
+	case "ptrace.tracee.arg0":
 		return "ptrace", nil
 
 	case "ptrace.tracee.args":
@@ -12055,6 +12216,10 @@ func (e *Event) GetFieldType(field eval.Field) (reflect.Kind, error) {
 
 		return reflect.String, nil
 
+	case "exec.arg0":
+
+		return reflect.String, nil
+
 	case "exec.args":
 
 		return reflect.String, nil
@@ -12559,6 +12724,10 @@ func (e *Event) GetFieldType(field eval.Field) (reflect.Kind, error) {
 
 		return reflect.Int, nil
 
+	case "process.ancestors.arg0":
+
+		return reflect.String, nil
+
 	case "process.ancestors.args":
 
 		return reflect.String, nil
@@ -12728,6 +12897,10 @@ func (e *Event) GetFieldType(field eval.Field) (reflect.Kind, error) {
 		return reflect.Int, nil
 
 	case "process.ancestors.user":
+
+		return reflect.String, nil
+
+	case "process.arg0":
 
 		return reflect.String, nil
 
@@ -12911,6 +13084,10 @@ func (e *Event) GetFieldType(field eval.Field) (reflect.Kind, error) {
 
 		return reflect.Int, nil
 
+	case "ptrace.tracee.ancestors.arg0":
+
+		return reflect.String, nil
+
 	case "ptrace.tracee.ancestors.args":
 
 		return reflect.String, nil
@@ -13080,6 +13257,10 @@ func (e *Event) GetFieldType(field eval.Field) (reflect.Kind, error) {
 		return reflect.Int, nil
 
 	case "ptrace.tracee.ancestors.user":
+
+		return reflect.String, nil
+
+	case "ptrace.tracee.arg0":
 
 		return reflect.String, nil
 
@@ -14245,6 +14426,17 @@ func (e *Event) SetFieldValue(field eval.Field, value interface{}) error {
 			return &eval.ErrValueTypeMismatch{Field: "ContainerContext.Tags"}
 		}
 		e.ContainerContext.Tags = append(e.ContainerContext.Tags, str)
+
+		return nil
+
+	case "exec.arg0":
+
+		var ok bool
+		str, ok := value.(string)
+		if !ok {
+			return &eval.ErrValueTypeMismatch{Field: "Exec.Process.Arg0"}
+		}
+		e.Exec.Process.Arg0 = str
 
 		return nil
 
@@ -15610,6 +15802,21 @@ func (e *Event) SetFieldValue(field eval.Field, value interface{}) error {
 
 		return nil
 
+	case "process.ancestors.arg0":
+
+		if e.ProcessContext.Ancestor == nil {
+			e.ProcessContext.Ancestor = &ProcessCacheEntry{}
+		}
+
+		var ok bool
+		str, ok := value.(string)
+		if !ok {
+			return &eval.ErrValueTypeMismatch{Field: "ProcessContext.Ancestor.ProcessContext.Process.Arg0"}
+		}
+		e.ProcessContext.Ancestor.ProcessContext.Process.Arg0 = str
+
+		return nil
+
 	case "process.ancestors.args":
 
 		if e.ProcessContext.Ancestor == nil {
@@ -16246,6 +16453,17 @@ func (e *Event) SetFieldValue(field eval.Field, value interface{}) error {
 
 		return nil
 
+	case "process.arg0":
+
+		var ok bool
+		str, ok := value.(string)
+		if !ok {
+			return &eval.ErrValueTypeMismatch{Field: "ProcessContext.Process.Arg0"}
+		}
+		e.ProcessContext.Process.Arg0 = str
+
+		return nil
+
 	case "process.args":
 
 		var ok bool
@@ -16729,6 +16947,21 @@ func (e *Event) SetFieldValue(field eval.Field, value interface{}) error {
 			return &eval.ErrValueTypeMismatch{Field: "PTrace.SyscallEvent.Retval"}
 		}
 		e.PTrace.SyscallEvent.Retval = int64(v)
+
+		return nil
+
+	case "ptrace.tracee.ancestors.arg0":
+
+		if e.PTrace.Tracee.Ancestor == nil {
+			e.PTrace.Tracee.Ancestor = &ProcessCacheEntry{}
+		}
+
+		var ok bool
+		str, ok := value.(string)
+		if !ok {
+			return &eval.ErrValueTypeMismatch{Field: "PTrace.Tracee.Ancestor.ProcessContext.Process.Arg0"}
+		}
+		e.PTrace.Tracee.Ancestor.ProcessContext.Process.Arg0 = str
 
 		return nil
 
@@ -17365,6 +17598,17 @@ func (e *Event) SetFieldValue(field eval.Field, value interface{}) error {
 			return &eval.ErrValueTypeMismatch{Field: "PTrace.Tracee.Ancestor.ProcessContext.Process.Credentials.User"}
 		}
 		e.PTrace.Tracee.Ancestor.ProcessContext.Process.Credentials.User = str
+
+		return nil
+
+	case "ptrace.tracee.arg0":
+
+		var ok bool
+		str, ok := value.(string)
+		if !ok {
+			return &eval.ErrValueTypeMismatch{Field: "PTrace.Tracee.Process.Arg0"}
+		}
+		e.PTrace.Tracee.Process.Arg0 = str
 
 		return nil
 

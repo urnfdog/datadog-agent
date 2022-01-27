@@ -133,6 +133,7 @@ The *file.rights* attribute can now be used in addition to *file.mode*. *file.mo
 | -------- | ---- | ---------- |
 | `container.id` | string | ID of the container |
 | `container.tags` | string | Tags of the container |
+| `process.ancestors.arg0` | string |  |
 | `process.ancestors.args` | string | Arguments of the process (as a string) |
 | `process.ancestors.args_flags` | string | Arguments of the process (as an array) |
 | `process.ancestors.args_options` | string | Arguments of the process (as an array) |
@@ -176,6 +177,7 @@ The *file.rights* attribute can now be used in addition to *file.mode*. *file.mo
 | `process.ancestors.tty_name` | string | Name of the TTY associated with the process |
 | `process.ancestors.uid` | int | UID of the process |
 | `process.ancestors.user` | string | User of the process |
+| `process.arg0` | string |  |
 | `process.args` | string | Arguments of the process (as a string) |
 | `process.args_flags` | string | Arguments of the process (as an array) |
 | `process.args_options` | string | Arguments of the process (as an array) |
@@ -297,6 +299,7 @@ A process was executed or forked
 
 | Property | Type | Definition |
 | -------- | ---- | ---------- |
+| `exec.arg0` | string |  |
 | `exec.args` | string | Arguments of the process (as a string) |
 | `exec.args_flags` | string | Arguments of the process (as an array) |
 | `exec.args_options` | string | Arguments of the process (as an array) |
@@ -473,6 +476,7 @@ A ptrace command was executed
 | -------- | ---- | ---------- |
 | `ptrace.request` | int |  |
 | `ptrace.retval` | int | Return value of the syscall |
+| `ptrace.tracee.ancestors.arg0` | string |  |
 | `ptrace.tracee.ancestors.args` | string | Arguments of the process (as a string) |
 | `ptrace.tracee.ancestors.args_flags` | string | Arguments of the process (as an array) |
 | `ptrace.tracee.ancestors.args_options` | string | Arguments of the process (as an array) |
@@ -516,6 +520,7 @@ A ptrace command was executed
 | `ptrace.tracee.ancestors.tty_name` | string | Name of the TTY associated with the process |
 | `ptrace.tracee.ancestors.uid` | int | UID of the process |
 | `ptrace.tracee.ancestors.user` | string | User of the process |
+| `ptrace.tracee.arg0` | string |  |
 | `ptrace.tracee.args` | string | Arguments of the process (as a string) |
 | `ptrace.tracee.args_flags` | string | Arguments of the process (as an array) |
 | `ptrace.tracee.args_options` | string | Arguments of the process (as an array) |
