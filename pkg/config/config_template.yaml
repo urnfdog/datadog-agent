@@ -1401,7 +1401,7 @@ api_key:
     ## memory usage is above the specified threshold.
     ## Threshold can be either an absolute value - such as 500MB or 2GB -
     ## or a percentage of the cgroup allocated memory such as 50%.
-    ## The action can be either:
+    ## The action can be:
     ## - gc: to trigger the Go garbage collector
     ## - profile: to generate a system-probe memory profile in /tmp
     ## - log: to simply log that the threshold was reached
@@ -1413,8 +1413,8 @@ api_key:
     ## @param pressure_levels - map of strings - optional
     ## Pressure levels and the respective active actions to trigger when
     ## memory usage reaches the specified level.
-    ## The pressure level can be either 'low', 'medium' or 'critical'.
-    ## The actions are the same than for thresholds (see above).
+    ## The pressure level is 'low', 'medium', or 'critical'.
+    ## The actions are the same for thresholds (see above).
     #
     # pressure_levels:
     #   medium: gc
