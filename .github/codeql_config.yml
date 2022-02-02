@@ -3,6 +3,8 @@ disable-default-queries: true
 queries:
   - name: Go Queries
     uses: datadog/qlpack/go-queries/codeql-suites/go-code-scanning.qls@main
+  - name: Go FIPS Query
+    uses: ./go-queries/go-crypto-check.ql
   - name: Python Queries
     uses: datadog/qlpack/python-queries/codeql-suites/python-code-scanning.qls@main
   - name: CPP Queries
