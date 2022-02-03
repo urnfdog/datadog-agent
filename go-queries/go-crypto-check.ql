@@ -11,5 +11,5 @@
 import go
 
 from ImportSpec i
-where i.getPath().regexpMatch("crypto.*")
+where i.getPath().regexpMatch("crypto/.*")
 select i, "Non-FIPS compliant go crypto import was found:" + i.getPath()
