@@ -1,0 +1,11 @@
+rules:
+- id: find-go-crypto
+  languages:
+    - go
+  patterns:
+    - pattern: import ("$CRPYTO")
+    - metavariable-regex:
+        metavariable: '$CRPYTO'
+        regex: '"crypto/.+"'
+  message: Go Crypto is not a FIPS compliant cryptopgraphic library
+  severity: INFO

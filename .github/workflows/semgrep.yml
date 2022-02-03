@@ -1,0 +1,33 @@
+name: "Semgrep Code Scan"
+
+on:
+  push:
+    branches:
+      - main
+      - klai/test-ci
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: reviewdog/action-setup@v1
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - run: |
+          pip install semgrep
+          semgrep --test
+        working-directory: semgrep/rules/
+      - run: |-
+          semgrep --config semgrep/ --json \
+          | jq -r '.results[] | "\(.extra.severity[0:1]):\(.path):\(.end.line) \(.extra.message)"' \
+          | reviewdog -tee -efm="%t:%f:%l %m" \
+            -diff="git diff ${{ github.event.pull_request.base.ref }}" \
+            -name=semgrep \
+            -reporter=github-pr-check \
+            -fail-on-error=false \
+            -level=info
