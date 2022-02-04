@@ -23,6 +23,8 @@ jobs:
           pip install semgrep
           semgrep --test
         working-directory: semgrep/rules/
+      - name: Test availability of github event to workflow API
+        run: echo ${{ github.event.pull_request.base.ref }}
       - name: Rum semgrep and pipe to reviewdog
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
