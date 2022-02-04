@@ -18,11 +18,15 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      - run: |
+      - name: Install and test semgrep
+        run: |
           pip install semgrep
           semgrep --test
         working-directory: semgrep/rules/
-      - run: |-
+      - name: Rum semgrep and pipe to reviewdog
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |-
           semgrep --config semgrep/ --json \
           | jq -r '.results[] | "\(.extra.severity[0:1]):\(.path):\(.end.line) \(.extra.message)"' \
           | reviewdog -tee -efm="%t:%f:%l %m" \
