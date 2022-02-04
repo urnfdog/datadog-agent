@@ -23,10 +23,6 @@ jobs:
           pip install semgrep
           semgrep --test
         working-directory: semgrep/rules/
-      - name: Test availability of github event to workflow API
-        run: |
-          echo "Testing head sha: ${{ github.event.base_ref }}"
-          echo "Testing base sha: ${{ github.event.before }}"
       - name: Rum semgrep and pipe to reviewdog
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -34,7 +30,7 @@ jobs:
           semgrep --config semgrep/ --json \
           | jq -r '.results[] | "\(.extra.severity[0:1]):\(.path):\(.end.line) \(.extra.message)"' \
           | reviewdog -tee -efm="%t:%f:%l %m" \
-            -diff="git diff ${{ github.event.pull_request.base.ref }}" \
+            -diff="git diff ${{ github.event.before }}" \
             -name=semgrep \
             -reporter=github-pr-check \
             -fail-on-error=false \
