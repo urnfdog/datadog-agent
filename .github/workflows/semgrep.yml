@@ -1,10 +1,7 @@
 name: "Semgrep Code Scan"
 
 on:
-  push:
-    branches:
-      - main
-      - klai/test-ci
+  pull_request:
 
 jobs:
   semgrep:
@@ -14,7 +11,7 @@ jobs:
       - uses: reviewdog/action-setup@v1
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.base_ref }}
+          ref: ${{ github.event.pull_request.head.sha }}
       - uses: actions/setup-python@v2
         with:
           python-version: 3.9
@@ -30,7 +27,7 @@ jobs:
           semgrep --config semgrep/ --json \
           | jq -r '.results[] | "\(.extra.severity[0:1]):\(.path):\(.end.line) \(.extra.message)"' \
           | reviewdog -tee -efm="%t:%f:%l %m" \
-            -diff="git diff ${{ github.event.before }}" \
+            -diff="git diff ${{ github.event.pull_request.base.ref }}" \
             -name=semgrep \
             -reporter=github-pr-check \
             -fail-on-error=false \
