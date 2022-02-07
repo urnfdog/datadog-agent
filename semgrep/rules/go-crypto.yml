@@ -7,7 +7,6 @@ rules:
     - metavariable-regex:
         metavariable: '$CRPYTO'
         regex: '"crypto/.+"'
-  fix: import("NotCryptoTest")
   message: |
     Go Crypto is not a FIPS compliant cryptopgraphic library
   severity: INFO
