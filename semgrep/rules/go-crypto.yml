@@ -11,3 +11,13 @@ rules:
   message: |
     Go Crypto is not a FIPS compliant cryptopgraphic library
   severity: INFO
+- id: find-md5-usage
+  languages:
+    - go
+  patterns:
+    - pattern: $MD5
+    - metavariable-regex:
+       metavariable: $MD5
+       regex: (?i)[^\d\w]+md5.*
+  message: md5 is unsafe to use for cryptographic purposes
+  severity: INFO
