@@ -29,6 +29,6 @@ jobs:
           | reviewdog -tee -efm="%t:%f:%l %m" \
             -diff="git diff ${{ github.event.pull_request.base.ref }}" \
             -name=semgrep \
-            -reporter=github-pr-review \
+            -reporter=github-pr-check \
             -fail-on-error=false \
             -level=info
