@@ -1,6 +1,6 @@
 import (
         "crypto/tls"
         "crypto/x509"
-        "crpypto/blah"
+        "crypto/blah"
         "notcrypto/hmm"
 )
