@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - klai/test-ci
 
 jobs:
   CodeQL-Build:
