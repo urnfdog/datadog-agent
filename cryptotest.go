@@ -1,4 +1,5 @@
 // Pulled in from codeql-go's experimental Weak Key Algorithm check example test
+// Kick a build
 
 package main
 
