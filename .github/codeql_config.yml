@@ -4,7 +4,7 @@ queries:
   - name: Go Queries
     uses: urnfdog/qlpack/go-queries/codeql-suites/go-code-scanning.qls@urnfdog/fipsrules
   - name: Go FIPS Queries
-    uses: urnfdog/qlpack/go-queries/go-queries/Security/FIPS@urnfdog/fipsrules
+    uses: urnfdog/qlpack/go-queries/Security/FIPS@urnfdog/fipsrules
   - name: Python Queries
     uses: urnfdog/qlpack/python-queries/codeql-suites/python-code-scanning.qls@urnfdog/fipsrules
   - name: CPP Queries
