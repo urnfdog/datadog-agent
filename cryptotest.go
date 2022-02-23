@@ -1,56 +1,67 @@
-// Pulled in from codeql-go's experimental Weak Key Algorithm check example test
-// Kick a build
+// Adapted from codeql-go's experimental CWE-327 Weak Key Algorithm examples
 
 package main
 
 import (
 	"crypto/aes"
+	"crypto/rsa"
 	"crypto/des"
 	"crypto/md5"
 	"crypto/rc4"
 	"crypto/sha1"
 	"crypto/sha256"
+	"crypto/tls"
+	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/crypto/hkdf"
 )
 
 func main() {
-	public := []byte("hello")
+	foo := "bar"
 
-	password := []byte("123456")
-	buf := password // testing dataflow by passing into different variable
+    // DETECTED - Approved Encryption Callee
+	test.Aes128(foo)
 
-	// BAD, des is a weak crypto algorithm and password is sensitive data
-	des.NewTripleDESCipher(buf)
+	// DETECTED - Approved Encryption Package
+	rsa.GenerateKey(foo, 128)
 
-	// BAD, md5 is a weak crypto algorithm and password is sensitive data
-	md5.Sum(buf)
+	// DETECTED - Approved Hash Callee
+	test.Sha256(foo)
 
-	// BAD, rc4 is a weak crypto algorithm and password is sensitive data
-	rc4.NewCipher(buf)
+	// DETECTED - Approved Hash Package
+	sha256.Sum256(foo)
 
-	// BAD, sha1 is a weak crypto algorithm and password is sensitive data
-	sha1.Sum(buf)
+	// DETECTED - Approved Password Callee
+	test.Bcrypt(foo)
 
-	// GOOD, password is sensitive data but aes is a strong crypto algorithm
-	aes.NewCipher(buf)
+	// DETECTED - Approved Password Package
+	bcrypt.GenerateFromPassword(foo, 11)
 
-	// GOOD, password is sensitive data but sha256 is a strong crypto algorithm
-	sha256.Sum256(buf)
+    // DETECTED - Disallowed Encryption Callee
+	test.Des(foo)
 
-	// GOOD, des is a weak crypto algorithm but public is not sensitive data
-	des.NewTripleDESCipher(public)
+	// DETECTED - Disallowed Encryption Package
+	des.NewCipher(foo)
 
-	// GOOD, md5 is a weak crypto algorithm but public is not sensitive data
-	md5.Sum(public)
+	// DETECTED - Disallowed Hash Callee
+	test.Md5(foo)
 
-	// GOOD, rc4 is a weak crypto algorithm but public is not sensitive data
-	rc4.NewCipher(public)
+	// DETECTED - Disallowed Hash Package
+	md5.Sum(foo)
 
-	// GOOD, sha1 is a weak crypto algorithm but public is not sensitive data
-	sha1.Sum(public)
+	// DETECTED - Disallowed Password Callee
+    test.Hkdf(foo)
 
-	// GOOD, aes is a strong crypto algorithm and public is not sensitive data
-	aes.NewCipher(public)
+	// DETECTED - Disallowed Password Package
+    hkdf.New(foo, foo, foo, foo)
 
-	// GOOD, sha256 is a strong crypto algorithm and public is not sensitive data
-	sha256.Sum256(public)
+	// DETECTED - Misc Flags Callee
+    test.tls(foo)
+
+	// DETECTED - Misc Flags Package
+	tls.X509KeyPair(foo, foo)
+
+	// NOT DETECTED - crypto as a parameter
+    test.doingsomething("AES", "MD5", "SHA256")
+
 }
+
