@@ -1,5 +1,4 @@
 // Adapted from codeql-go's experimental CWE-327 Weak Key Algorithm examples
-// kick a build
 
 package main
 
