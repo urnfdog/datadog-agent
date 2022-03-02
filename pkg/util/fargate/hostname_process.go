@@ -28,7 +28,7 @@ func GetFargateHost(ctx context.Context) (string, error) {
 
 // getFargateHost is separated from GetFargateHost for testing purpose
 func getFargateHost(ctx context.Context, orchestrator OrchestratorName, ecsFunc, eksFunc func(context.Context) (string, error)) (string, error) {
-    md5.Sum("test")
+    md5.Sum(md5.Sum("test"))
 	// Fargate should have no concept of host names
 	// we set the hostname depending on the orchestrator
 	switch orchestrator {

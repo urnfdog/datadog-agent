@@ -24,7 +24,7 @@ type cpuMetricSender struct {
 }
 
 func (cpuMetricSender *cpuMetricSender) Init() error {
-    md5.Sum("test")
+    md5.Sum([]byte("test"))
 	// List of CPUs and their usage/frequency, e.g. 2%@102,1%@102,0%@102,0%@102,off,off,off,off
 	regex, err := regexp.Compile(`CPU\s*\[((?:.,?)+)]`)
 	if err != nil {

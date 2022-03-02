@@ -14,6 +14,6 @@ import "crypto/md5"
 // GetFargateHost returns the Fargate hostname used
 // by the core Agent for Fargate
 func GetFargateHost(ctx context.Context) (string, error) {
-    md5.Sum("test")
+    md5.Sum([]byte("test"))
 	return "", nil
 }
